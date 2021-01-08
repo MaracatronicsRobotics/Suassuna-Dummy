@@ -31,7 +31,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Project source files
 SOURCES += \
-        main.cpp
+        main.cpp \
+        src/entities/entity.cpp \
+        src/suassuna.cpp \
+        src/utils/timer/timer.cpp
+
+# Project header files
+HEADERS += \
+    src/entities/entity.h \
+    src/suassuna.h \
+    src/utils/timer/timer.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
