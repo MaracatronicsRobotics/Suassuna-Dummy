@@ -19,11 +19,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#include <QCoreApplication>
+#ifndef TIMER_H
+#define TIMER_H
 
-int main(int argc, char *argv[])
+#include <ctime>
+
+class Timer
 {
-    QCoreApplication a(argc, argv);
+public:
+    Timer();
 
-    return a.exec();
-}
+    // Timer control
+    void start();
+    void stop();
+
+    // Getters
+    double getSeconds();
+    double getMiliSeconds();
+    double getMicroSeconds();
+    double getNanoSeconds();
+
+private:
+    timespec _time1;
+    timespec _time2;
+};
+
+#endif // TIMER_H
