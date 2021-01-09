@@ -9,7 +9,7 @@ QT += core    \
 TEMPLATE = app
 DESTDIR  = ../bin
 TARGET   = Armorial-Suassuna
-VERSION  = 0.0.5
+VERSION  = 0.0.1
 
 CONFIG += c++14 console
 CONFIG -= app_bundle
