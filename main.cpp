@@ -20,10 +20,22 @@
  ***/
 
 #include <QCoreApplication>
+#include <src/utils/text/text.h>
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+    a.setApplicationVersion(APP_VERSION);
 
-    return a.exec();
+    std::cout << Text::bold(Text::center(" ____                                               ")) << '\n';
+    std::cout << Text::bold(Text::center("/ ___|  _   _   __ _  ___  ___  _   _  _ __    __ _ ")) << '\n';
+    std::cout << Text::bold(Text::center("\\___ \\ | | | | / _` |/ __|/ __|| | | || '_ \\  / _` |")) << '\n';
+    std::cout << Text::bold(Text::center(" ___) || |_| || (_| |\\__ \\\\__ \\| |_| || | | || (_| |")) << '\n';
+    std::cout << Text::bold(Text::center("|____/  \\__,_| \\__,_||___/|___/ \\__,_||_| |_| \\__,_|")) << '\n';
+    std::cout << Text::bold(Text::center("Made with 💛 by Maracatronics Robotics Team.")) << '\n';
+    std::cout << Text::bold(Text::center("Version " + a.applicationVersion().toStdString())) << '\n' << '\n';
+
+    bool exec = a.exec();
+
+    return exec;
 }
