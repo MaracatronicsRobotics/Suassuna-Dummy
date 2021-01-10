@@ -19,24 +19,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef TEXT_H
-#define TEXT_H
+#ifndef SUASSUNA_H
+#define SUASSUNA_H
 
-#include <iostream>
+#include <src/entities/vision/vision.h>
+#include <src/entities/world/world.h>
 
-class Text
+class Suassuna
 {
 public:
-    Text();
+    Suassuna();
 
-    static std::string center(std::string s);
-    static std::string bold(std::string s);
-    static std::string red(std::string s, bool bold = false);
-    static std::string green(std::string s, bool bold = false);
-    static std::string yellow(std::string s, bool bold = false);
-    static std::string blue(std::string s, bool bold = false);
-    static std::string purple(std::string s, bool bold = false);
-    static std::string cyan(std::string s, bool bold = false);
+    // Internal management
+    void start();
+    void stop();
+
+private:
+    // Modules
+    Vision *_vision;
+
+    // World
+    World *_world;
 };
 
-#endif // TEXT_H
+#endif // SUASSUNA_H

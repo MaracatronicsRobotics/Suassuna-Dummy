@@ -19,24 +19,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef TEXT_H
-#define TEXT_H
+#include "suassuna.h"
 
-#include <iostream>
+Suassuna::Suassuna() {
+    // Creating world
+    _world = new World();
+}
 
-class Text
-{
-public:
-    Text();
+void Suassuna::start() {
+    // Creating and adding vision to world
+    _vision = new Vision("224.5.23.2", 10002);
+    _world->addEntity(_vision, 0);
 
-    static std::string center(std::string s);
-    static std::string bold(std::string s);
-    static std::string red(std::string s, bool bold = false);
-    static std::string green(std::string s, bool bold = false);
-    static std::string yellow(std::string s, bool bold = false);
-    static std::string blue(std::string s, bool bold = false);
-    static std::string purple(std::string s, bool bold = false);
-    static std::string cyan(std::string s, bool bold = false);
-};
+    // Starting world
+    _world->start();
+}
 
-#endif // TEXT_H
+void Suassuna::stop() {
+    // Stopping and waiting world
+    _world->stopEntity();
+    _world->wait();
+
+    // Deleting world (it also delete all other entities added to it)
+    delete _world;
+}

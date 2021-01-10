@@ -27,12 +27,8 @@
 
 Vision::Vision(QString visionAddress, quint16 visionPort) : Entity(ENT_VISION) {
     // Creating socket and setting network data
-    _visionClient = new QUdpSocket(this);
     _visionAddress = visionAddress;
     _visionPort = visionPort;
-
-    // Bind and connect socket in network
-    bindAndConnect();
 }
 
 Vision::~Vision() {
@@ -45,6 +41,9 @@ Vision::~Vision() {
 }
 
 void Vision::initialization() {
+    // Bind and connect socket in network
+    bindAndConnect();
+
     std::cout << Text::cyan("[VISION] ", true) << Text::bold("Started at address '" + _visionAddress.toStdString() + "' and port '" + std::to_string(_visionPort) + "'.") << '\n';
 }
 
@@ -109,11 +108,16 @@ void Vision::finalization() {
 }
 
 void Vision::bindAndConnect() {
+    // Creating socket
+    _visionClient = new QUdpSocket();
+
+    // Binding in defined network
     if(_visionClient->bind(QHostAddress(_visionAddress), _visionPort, QUdpSocket::ShareAddress) == false) {
         std::cout << Text::cyan("[VISION] " , true) << Text::red("Error while binding socket.", true) << '\n';
         return ;
     }
 
+    // Joining multicast group
     if(_visionClient->joinMulticastGroup(QHostAddress(_visionAddress)) == false) {
         std::cout << Text::cyan("[VISION] ", true) << Text::red("Error while joining multicast.", true) << '\n';
         return ;

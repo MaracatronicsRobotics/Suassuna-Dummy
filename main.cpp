@@ -21,6 +21,8 @@
 
 #include <QCoreApplication>
 #include <src/utils/text/text.h>
+#include <src/exithandler.h>
+#include <src/suassuna.h>
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +37,18 @@ int main(int argc, char *argv[])
     std::cout << Text::bold(Text::center("Made with 💛 by Maracatronics Robotics Team.")) << '\n';
     std::cout << Text::bold(Text::center("Version " + a.applicationVersion().toStdString())) << '\n' << '\n';
 
+    // Setup ExitHandler
+    ExitHandler::setApplication(&a);
+    ExitHandler::setup();
+
+    // Start Suassuna
+    Suassuna *suassuna = new Suassuna();
+    suassuna->start();
+
     bool exec = a.exec();
+
+    // Stop Suassuna
+    suassuna->stop();
 
     return exec;
 }
