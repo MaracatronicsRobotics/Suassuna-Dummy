@@ -19,24 +19,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef TEXT_H
-#define TEXT_H
+#ifndef EXITHANDLER_H
+#define EXITHANDLER_H
 
-#include <iostream>
+#include <QObject>
+#include <QCoreApplication>
 
-class Text
+class ExitHandler : public QObject
 {
 public:
-    Text();
+    ExitHandler();
+    static void setApplication(QCoreApplication *app);
+    static void setup();
+    static void run(int s);
 
-    static std::string center(std::string s);
-    static std::string bold(std::string s);
-    static std::string red(std::string s, bool bold = false);
-    static std::string green(std::string s, bool bold = false);
-    static std::string yellow(std::string s, bool bold = false);
-    static std::string blue(std::string s, bool bold = false);
-    static std::string purple(std::string s, bool bold = false);
-    static std::string cyan(std::string s, bool bold = false);
+private:
+    static QCoreApplication *_app;
+    static int _counter;
 };
 
-#endif // TEXT_H
+#endif // EXITHANDLER_H

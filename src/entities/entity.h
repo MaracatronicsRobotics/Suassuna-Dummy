@@ -31,7 +31,8 @@ enum EntityType {
     ENT_PLAYER,
     ENT_COACH,
     ENT_VISION,
-    ENT_ACTUATOR
+    ENT_ACTUATOR,
+    ENT_WORLD
 };
 
 class Entity : public QThread

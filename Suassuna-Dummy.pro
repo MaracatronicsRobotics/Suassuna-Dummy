@@ -53,6 +53,8 @@ SOURCES += \
         main.cpp \
         src/entities/entity.cpp \
         src/entities/vision/vision.cpp \
+        src/entities/world/world.cpp \
+        src/exithandler.cpp \
         src/suassuna.cpp \
         src/utils/text/text.cpp \
         src/utils/timer/timer.cpp
@@ -76,6 +78,8 @@ HEADERS += \
     include/ssl_referee.pb.h \
     src/entities/entity.h \
     src/entities/vision/vision.h \
+    src/entities/world/world.h \
+    src/exithandler.h \
     src/suassuna.h \
     src/utils/text/text.h \
     src/utils/timer/timer.h

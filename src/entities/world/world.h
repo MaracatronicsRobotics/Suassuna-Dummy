@@ -19,24 +19,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef TEXT_H
-#define TEXT_H
+#ifndef WORLD_H
+#define WORLD_H
 
-#include <iostream>
+#include <QMap>
 
-class Text
+#include <src/entities/entity.h>
+
+class World : public Entity
 {
 public:
-    Text();
+    World();
+    ~World();
 
-    static std::string center(std::string s);
-    static std::string bold(std::string s);
-    static std::string red(std::string s, bool bold = false);
-    static std::string green(std::string s, bool bold = false);
-    static std::string yellow(std::string s, bool bold = false);
-    static std::string blue(std::string s, bool bold = false);
-    static std::string purple(std::string s, bool bold = false);
-    static std::string cyan(std::string s, bool bold = false);
+    // Entities management
+    void addEntity(Entity *e, int priority);
+
+private:
+    // Entity inherited methods
+    void initialization();
+    void loop();
+    void finalization();
+
+    // Internal
+    void startEntities();
+    void stopAndDeleteEntities();
+
+    // Hashtable for entities
+    QMap<int, Entity*> _moduleEntities;
 };
 
-#endif // TEXT_H
+#endif // WORLD_H
