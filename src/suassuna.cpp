@@ -31,6 +31,10 @@ void Suassuna::start() {
     _vision = new Vision("224.5.23.2", 10002);
     _world->addEntity(_vision, 0);
 
+    // Creating and adding actuator to world
+    _simActuator = new SimActuator("127.0.0.1", 20011);
+    _world->addEntity(_simActuator, 1);
+
     // Starting world
     _world->start();
 }

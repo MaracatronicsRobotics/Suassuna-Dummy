@@ -24,6 +24,7 @@
 
 #include <src/entities/vision/vision.h>
 #include <src/entities/world/world.h>
+#include <src/entities/actuator/simulator/simactuator.h>
 
 class Suassuna
 {
@@ -37,6 +38,7 @@ public:
 private:
     // Modules
     Vision *_vision;
+    SimActuator *_simActuator;
 
     // World
     World *_world;
