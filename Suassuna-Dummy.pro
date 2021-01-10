@@ -51,6 +51,8 @@ SOURCES += \
         include/ssl_game_event_2019.pb.cc \
         include/ssl_referee.pb.cc \
         main.cpp \
+        src/entities/actuator/actuator.cpp \
+        src/entities/actuator/simulator/simactuator.cpp \
         src/entities/entity.cpp \
         src/entities/vision/vision.cpp \
         src/entities/world/world.cpp \
@@ -76,6 +78,8 @@ HEADERS += \
     include/ssl_game_event.pb.h \
     include/ssl_game_event_2019.pb.h \
     include/ssl_referee.pb.h \
+    src/entities/actuator/actuator.h \
+    src/entities/actuator/simulator/simactuator.h \
     src/entities/entity.h \
     src/entities/vision/vision.h \
     src/entities/world/world.h \
