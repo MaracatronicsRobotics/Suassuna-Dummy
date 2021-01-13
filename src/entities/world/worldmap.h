@@ -43,6 +43,7 @@ class WorldMap : public QObject{
     private:
         mutable QReadWriteLock* _teamsLock;
         mutable QReadWriteLock* _ballsLock;
+        mutable QMutex* _detectionMutex;
 
         // Teams info
         uint8 _nTeams;
