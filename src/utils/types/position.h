@@ -19,39 +19,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef VISION_H
-#define VISION_H
+#ifndef POSITION_H
+#define POSITION_H
 
-#include <QUdpSocket>
+#include <src/utils/types/typesNamespace.h>
 
-#include <src/entities/entity.h>
-#include <include/messages_robocup_ssl_wrapper.pb.h>
-#include <include/messages_robocup_ssl_detection.pb.h>
+class soccertypes::Position{
+    public:
+        Position();
+        Position(bool known, float x, float y, float z);
 
-class Vision : public Entity
-{
-    Q_OBJECT
-public:
-    Vision(QString visionAddress, quint16 visionPort);
-    ~Vision();
+    private:
+        // Position coordinates
+        float _x;
+        float _y;
+        float _z;
 
-private:
-    // Entity inherited methods
-    void initialization();
-    void loop();
-    void finalization();
+        // Info flags
+        bool _unknown;
+        bool _valid;
 
-    // Socket for receive vision data
-    QUdpSocket *_visionClient;
-    void bindAndConnect();
+    public:
+        Position& operator =(const Position& other);
 
-    // Network
-    QString _visionAddress;
-    quint16 _visionPort;
+        void setPosition(float x, float y, float z);
+        float x() const;
+        float y() const;
+        float z() const;
 
-signals:
-    void sendDetectData(SSL_DetectionFrame detectData);
-    void sendGeometData(SSL_GeometryData geometData);
+        bool isUnknown() const;
+        bool isValid() const;
+        void setUnknown();
+        void setInvalid();
+
 };
 
-#endif // VISION_H
+#endif // POSITION_H

@@ -19,39 +19,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef VISION_H
-#define VISION_H
+#ifndef ANGULARSPEED_H
+#define ANGULARSPEED_H
 
-#include <QUdpSocket>
+#include <src/utils/types/typesNamespace.h>
 
-#include <src/entities/entity.h>
-#include <include/messages_robocup_ssl_wrapper.pb.h>
-#include <include/messages_robocup_ssl_detection.pb.h>
-
-class Vision : public Entity
-{
-    Q_OBJECT
+class soccertypes::AngularSpeed{
 public:
-    Vision(QString visionAddress, quint16 visionPort);
-    ~Vision();
+    AngularSpeed();
+    AngularSpeed(bool known, float value);
 
 private:
-    // Entity inherited methods
-    void initialization();
-    void loop();
-    void finalization();
+    // Angle value
+    float _value;
 
-    // Socket for receive vision data
-    QUdpSocket *_visionClient;
-    void bindAndConnect();
+    // Info flags
+    bool _unknown;
+    bool _valid;
 
-    // Network
-    QString _visionAddress;
-    quint16 _visionPort;
+public:
+    AngularSpeed& operator =(const AngularSpeed& other);
+    AngularSpeed& operator =(const float value);
 
-signals:
-    void sendDetectData(SSL_DetectionFrame detectData);
-    void sendGeometData(SSL_GeometryData geometData);
+    void setValue(float value);
+    float value() const;
+    bool isUnknown() const;
+    bool isValid() const;
+    void setUnknown();
+    void setInvalid();
 };
 
-#endif // VISION_H
+#endif // ANGULARSPEED_H

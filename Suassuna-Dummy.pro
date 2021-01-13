@@ -56,10 +56,16 @@ SOURCES += \
         src/entities/entity.cpp \
         src/entities/vision/vision.cpp \
         src/entities/world/world.cpp \
+        src/entities/world/worldmap.cpp \
         src/exithandler.cpp \
         src/suassuna.cpp \
         src/utils/text/text.cpp \
-        src/utils/timer/timer.cpp
+        src/utils/timer/timer.cpp \
+        src/utils/types/angle.cpp \
+        src/utils/types/angularspeed.cpp \
+        src/utils/types/position.cpp \
+        src/utils/types/team.cpp \
+        src/utils/types/velocity.cpp
 
 # Project header files
 HEADERS += \
@@ -83,10 +89,19 @@ HEADERS += \
     src/entities/entity.h \
     src/entities/vision/vision.h \
     src/entities/world/world.h \
+    src/entities/world/worldmap.h \
     src/exithandler.h \
     src/suassuna.h \
+    src/utils/color/color.h \
     src/utils/text/text.h \
-    src/utils/timer/timer.h
+    src/utils/timer/timer.h \
+    src/utils/types/angle.h \
+    src/utils/types/angularspeed.h \
+    src/utils/types/position.h \
+    src/utils/types/team.h \
+    src/utils/types/types.h \
+    src/utils/types/typesNamespace.h \
+    src/utils/types/velocity.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

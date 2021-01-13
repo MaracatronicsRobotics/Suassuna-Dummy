@@ -19,39 +19,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef VISION_H
-#define VISION_H
+#ifndef TYPESNAMESPACE_H
+#define TYPESNAMESPACE_H
 
-#include <QUdpSocket>
+namespace soccertypes {
+    class Angle;
+    class Position;
+    class Velocity;
+    class AngularSpeed;
+    class Team;
+}
 
-#include <src/entities/entity.h>
-#include <include/messages_robocup_ssl_wrapper.pb.h>
-#include <include/messages_robocup_ssl_detection.pb.h>
-
-class Vision : public Entity
-{
-    Q_OBJECT
-public:
-    Vision(QString visionAddress, quint16 visionPort);
-    ~Vision();
-
-private:
-    // Entity inherited methods
-    void initialization();
-    void loop();
-    void finalization();
-
-    // Socket for receive vision data
-    QUdpSocket *_visionClient;
-    void bindAndConnect();
-
-    // Network
-    QString _visionAddress;
-    quint16 _visionPort;
-
-signals:
-    void sendDetectData(SSL_DetectionFrame detectData);
-    void sendGeometData(SSL_GeometryData geometData);
-};
-
-#endif // VISION_H
+#endif // TYPESNAMESPACE_H

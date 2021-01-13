@@ -27,9 +27,16 @@ Suassuna::Suassuna() {
 }
 
 void Suassuna::start() {
+    // Creating World Map
+    _worldMap = new WorldMap();
+
     // Creating and adding vision to world
     _vision = new Vision("224.5.23.2", 10002);
     _world->addEntity(_vision, 0);
+
+    // Vision-WorldMap connection
+    QObject::connect(_vision, SIGNAL(sendDetectData(SSL_DetectionFrame)), _worldMap, SLOT(receiveDetectionData(SSL_DetectionFrame)), Qt::DirectConnection);
+    QObject::connect(_vision, SIGNAL(sendGeometData(SSL_GeometryData)), _worldMap, SLOT(receiveGeometryData(SSL_GeometryData)), Qt::DirectConnection);
 
     // Creating and adding actuator to world
     _simActuator = new SimActuator("127.0.0.1", 20011);

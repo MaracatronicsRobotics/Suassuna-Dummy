@@ -25,6 +25,7 @@
 #include <src/entities/vision/vision.h>
 #include <src/entities/world/world.h>
 #include <src/entities/actuator/simulator/simactuator.h>
+#include <src/entities/world/worldmap.h>
 
 class Suassuna
 {
@@ -42,6 +43,9 @@ private:
 
     // World
     World *_world;
+
+    // World Map
+    WorldMap *_worldMap;
 };
 
 #endif // SUASSUNA_H
