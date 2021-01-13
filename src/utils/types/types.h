@@ -19,39 +19,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef VISION_H
-#define VISION_H
+#ifndef TYPES_H
+#define TYPES_H
 
-#include <QUdpSocket>
+// Includes Qt library
+#include <QtCore/QtCore>
 
-#include <src/entities/entity.h>
-#include <include/messages_robocup_ssl_wrapper.pb.h>
-#include <include/messages_robocup_ssl_detection.pb.h>
 
-class Vision : public Entity
-{
-    Q_OBJECT
-public:
-    Vision(QString visionAddress, quint16 visionPort);
-    ~Vision();
+// Elementary types
+#define int8   qint8
+#define int16  qint16
+#define int32  qint32
+#define uint8  quint8
+#define uint16 quint16
+#define uint32 quint32
 
-private:
-    // Entity inherited methods
-    void initialization();
-    void loop();
-    void finalization();
+#include <src/utils/types/angle.h>
+#include <src/utils/types/position.h>
+#include <src/utils/types/velocity.h>
+#include <src/utils/types/angularspeed.h>
+#include <src/utils/types/team.h>
 
-    // Socket for receive vision data
-    QUdpSocket *_visionClient;
-    void bindAndConnect();
-
-    // Network
-    QString _visionAddress;
-    quint16 _visionPort;
-
-signals:
-    void sendDetectData(SSL_DetectionFrame detectData);
-    void sendGeometData(SSL_GeometryData geometData);
-};
-
-#endif // VISION_H
+#endif // TYPES_H

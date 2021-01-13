@@ -20,9 +20,6 @@
  ***/
 
 #include "vision.h"
-
-#include <include/messages_robocup_ssl_wrapper.pb.h>
-#include <include/messages_robocup_ssl_detection.pb.h>
 #include <src/utils/text/text.h>
 
 Vision::Vision(QString visionAddress, quint16 visionPort) : Entity(ENT_VISION) {
@@ -64,6 +61,7 @@ void Vision::loop() {
         // Debug vision frame
         if(wrapperData.has_detection()) {
             SSL_DetectionFrame visionFrame = wrapperData.detection();
+            emit sendDetectData(visionFrame);
 
             std::cout << "CAMERA " << visionFrame.camera_id() << '\n';
             std::cout << "======================= " << '\n';
@@ -86,6 +84,7 @@ void Vision::loop() {
         // Debug geometry data
         if(wrapperData.has_geometry()) {
             SSL_GeometryData geomData = wrapperData.geometry();
+            //emit sendGeometData(geomData);
 
             std::cout << "GEOMETRY" << '\n';
             std::cout << "======================= " << '\n';
