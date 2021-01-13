@@ -39,23 +39,27 @@ WorldMap::WorldMap() {
     _ballsPositions.clear();
     _ballsVelocities.clear();
 
-    // Lockers
+    // Lockers and mutexes
     _teamsLock = new QReadWriteLock();
     _ballsLock = new QReadWriteLock();
+    _detectionMutex = new QMutex();
 }
 
 WorldMap::~WorldMap() {
-    // Delete QReadWrite lockers
+    // Delete QReadWrite lockers and mutexes
     delete _ballsLock;
     delete _teamsLock;
+    delete _detectionMutex;
 }
 
 void WorldMap::receiveGeometryData(SSL_GeometryData geometData){
 }
 
 void WorldMap::receiveDetectionData(SSL_DetectionFrame detectData){
+    _detectionMutex->lock();
     updateBlueTeam(&detectData);
     updateYellowTeam(&detectData);
+    _detectionMutex->unlock();
 }
 
 void WorldMap::updateBlueTeam(SSL_DetectionFrame* detectData){
@@ -67,7 +71,9 @@ void WorldMap::updateBlueTeam(SSL_DetectionFrame* detectData){
     for(int i = 0; i < detectData->robots_blue_size(); i++){
         // Add/update player
         quint8 robotId = static_cast<quint8>(detectData->robots_blue(i).robot_id());
-        addPlayer(Colors::BLUE, robotId);
+        if(!players(Colors::BLUE).contains(robotId)) {
+            addPlayer(Colors::BLUE, robotId);
+        }
         recentPlayers.append(robotId);
 
         // Checks if this robot has recent position data and update it
@@ -95,7 +101,9 @@ void WorldMap::updateYellowTeam(SSL_DetectionFrame* detectData){
     for(int i = 0; i < detectData->robots_yellow_size(); i++){
         // Add/update player
         quint8 robotId = static_cast<quint8>(detectData->robots_yellow(i).robot_id());
-        addPlayer(Colors::YELLOW, robotId);
+        if(!players(Colors::YELLOW).contains(robotId)) {
+            addPlayer(Colors::YELLOW, robotId);
+        }
         recentPlayers.append(robotId);
 
         // Checks if this robot has position data and update it in wm
