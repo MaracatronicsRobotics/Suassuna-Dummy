@@ -20,6 +20,7 @@
  ***/
 
 #include <QCoreApplication>
+#include <src/constants/constants.h>
 #include <src/utils/text/text.h>
 #include <src/exithandler.h>
 #include <src/suassuna.h>
@@ -41,8 +42,11 @@ int main(int argc, char *argv[])
     ExitHandler::setApplication(&a);
     ExitHandler::setup();
 
+    // Initiating constants
+    Constants *constants = new Constants("../src/constants/constants.json");
+
     // Start Suassuna
-    Suassuna *suassuna = new Suassuna();
+    Suassuna *suassuna = new Suassuna(constants);
     suassuna->start();
 
     bool exec = a.exec();

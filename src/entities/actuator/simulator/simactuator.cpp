@@ -24,9 +24,13 @@
 #include <math.h>
 #include <src/utils/text/text.h>
 
-SimActuator::SimActuator(QString actuatorAddress, quint16 actuatorPort) {
-    _actuatorAddress = actuatorAddress;
-    _actuatorPort = actuatorPort;
+SimActuator::SimActuator(Constants *constants) {
+    // Taking constants
+    _constants = constants;
+
+    // Setting network data from constants
+    _actuatorAddress = getConstants()->simActuatorAddress();
+    _actuatorPort = getConstants()->simActuatorPort();
 }
 
 void SimActuator::initialization() {
@@ -135,4 +139,15 @@ void SimActuator::chipKick(int teamId, int playerId, float power) {
     _robotData[teamId][playerId].kickPowerZ = power * sin(0.42262189947);
     _robotData[teamId][playerId].isUpdated = false;
     _dataMutex.unlock();
+}
+
+Constants* SimActuator::getConstants() {
+    if(_constants == nullptr) {
+        std::cout << Text::red("[ERROR] ", true) << Text::bold("Constants with nullptr value at SimActuator") << '\n';
+    }
+    else {
+        return _constants;
+    }
+
+    return nullptr;
 }

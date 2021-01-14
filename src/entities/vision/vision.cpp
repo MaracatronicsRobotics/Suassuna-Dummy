@@ -22,10 +22,13 @@
 #include "vision.h"
 #include <src/utils/text/text.h>
 
-Vision::Vision(QString visionAddress, quint16 visionPort) : Entity(ENT_VISION) {
-    // Creating socket and setting network data
-    _visionAddress = visionAddress;
-    _visionPort = visionPort;
+Vision::Vision(Constants *constants) : Entity(ENT_VISION) {
+    // Taking constants
+    _constants = constants;
+
+    // Taking network data from constants
+    _visionAddress = getConstants()->visionAddress();
+    _visionPort = getConstants()->visionPort();
 }
 
 Vision::~Vision() {
@@ -121,4 +124,15 @@ void Vision::bindAndConnect() {
         std::cout << Text::cyan("[VISION] ", true) << Text::red("Error while joining multicast.", true) << '\n';
         return ;
     }
+}
+
+Constants* Vision::getConstants() {
+    if(_constants == nullptr) {
+        std::cout << Text::red("[ERROR] ", true) << Text::bold("Constants with nullptr value at Vision") << '\n';
+    }
+    else {
+        return _constants;
+    }
+
+    return nullptr;
 }

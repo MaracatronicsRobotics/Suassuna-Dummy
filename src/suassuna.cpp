@@ -21,9 +21,12 @@
 
 #include "suassuna.h"
 
-Suassuna::Suassuna() {
+Suassuna::Suassuna(Constants *constants) {
+    // Setting up constants
+    _constants = constants;
+
     // Creating world
-    _world = new World();
+    _world = new World(getConstants());
 }
 
 void Suassuna::start() {
@@ -31,7 +34,7 @@ void Suassuna::start() {
     _worldMap = new WorldMap();
 
     // Creating and adding vision to world
-    _vision = new Vision("224.5.23.2", 10002);
+    _vision = new Vision(getConstants());
     _world->addEntity(_vision, 0);
 
     // Vision-WorldMap connection
@@ -39,7 +42,7 @@ void Suassuna::start() {
     QObject::connect(_vision, SIGNAL(sendGeometData(SSL_GeometryData)), _worldMap, SLOT(receiveGeometryData(SSL_GeometryData)), Qt::DirectConnection);
 
     // Creating and adding actuator to world
-    _simActuator = new SimActuator("127.0.0.1", 20011);
+    _simActuator = new SimActuator(getConstants());
     _world->addEntity(_simActuator, 1);
 
     // Starting world
@@ -53,4 +56,15 @@ void Suassuna::stop() {
 
     // Deleting world (it also delete all other entities added to it)
     delete _world;
+}
+
+Constants* Suassuna::getConstants() {
+    if(_constants == nullptr) {
+        std::cout << Text::red("[ERROR] ", true) << Text::bold("Constants with nullptr value at Suassuna") << '\n';
+    }
+    else {
+        return _constants;
+    }
+
+    return nullptr;
 }
