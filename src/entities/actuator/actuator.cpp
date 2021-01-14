@@ -37,7 +37,7 @@ Actuator::Actuator() : Entity(ENT_ACTUATOR) {
             _robotData[i][j].kickPowerX = 0.0f;
             _robotData[i][j].kickPowerZ = 0.0f;
             _robotData[i][j].dribbling = false;
-            _robotData[i][j].isUpdated = false;
+            _robotData[i][j].isUpdated = true;
         }
     }
 }

@@ -25,11 +25,12 @@
 #include <QMap>
 
 #include <src/entities/entity.h>
+#include <src/constants/constants.h>
 
 class World : public Entity
 {
 public:
-    World();
+    World(Constants *constants);
     ~World();
 
     // Entities management
@@ -40,6 +41,10 @@ private:
     void initialization();
     void loop();
     void finalization();
+
+    // Constants
+    Constants *_constants;
+    Constants* getConstants();
 
     // Internal
     void startEntities();

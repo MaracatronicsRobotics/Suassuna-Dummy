@@ -26,17 +26,22 @@
 #include <src/entities/world/world.h>
 #include <src/entities/actuator/simulator/simactuator.h>
 #include <src/entities/world/worldmap.h>
+#include <src/constants/constants.h>
 
 class Suassuna
 {
 public:
-    Suassuna();
+    Suassuna(Constants *constants);
 
     // Internal management
     void start();
     void stop();
 
 private:
+    // Constants
+    Constants *_constants;
+    Constants* getConstants();
+
     // Modules
     Vision *_vision;
     SimActuator *_simActuator;

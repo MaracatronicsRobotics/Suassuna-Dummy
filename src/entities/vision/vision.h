@@ -25,6 +25,7 @@
 #include <QUdpSocket>
 
 #include <src/entities/entity.h>
+#include <src/constants/constants.h>
 #include <include/messages_robocup_ssl_wrapper.pb.h>
 #include <include/messages_robocup_ssl_detection.pb.h>
 
@@ -32,7 +33,7 @@ class Vision : public Entity
 {
     Q_OBJECT
 public:
-    Vision(QString visionAddress, quint16 visionPort);
+    Vision(Constants *constants);
     ~Vision();
 
 private:
@@ -40,6 +41,10 @@ private:
     void initialization();
     void loop();
     void finalization();
+
+    // Constants
+    Constants *_constants;
+    Constants* getConstants();
 
     // Socket for receive vision data
     QUdpSocket *_visionClient;

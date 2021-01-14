@@ -25,19 +25,24 @@
 #include <QUdpSocket>
 
 #include <src/entities/actuator/actuator.h>
+#include <src/constants/constants.h>
 #include <include/grSim_Packet.pb.h>
 
 class SimActuator : public Actuator
 {
     Q_OBJECT
 public:
-    SimActuator(QString actuatorAddress, quint16 actuatorPort);
+    SimActuator(Constants *constants);
 
 private:
     // Entity inherited methods
     void initialization();
     void loop();
     void finalization();
+
+    // Constants
+    Constants *_constants;
+    Constants* getConstants();
 
     // Network info
     QString _actuatorAddress;

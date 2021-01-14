@@ -23,8 +23,8 @@
 
 #include <src/utils/text/text.h>
 
-World::World() : Entity(ENT_WORLD){
-
+World::World(Constants *constants) : Entity(ENT_WORLD){
+    _constants = constants;
 }
 
 World::~World() {
@@ -71,6 +71,9 @@ void World::startEntities() {
             // Take entity
             Entity *entity = *it;
 
+            // Set frequency
+            entity->setLoopFrequency(getConstants()->threadFrequency());
+
             // Start entity
             entity->start();
         }
@@ -114,4 +117,15 @@ void World::stopAndDeleteEntities() {
             delete entity;
         }
     }
+}
+
+Constants* World::getConstants() {
+    if(_constants == nullptr) {
+        std::cout << Text::red("[ERROR] ", true) << Text::bold("Constants with nullptr value at World") << '\n';
+    }
+    else {
+        return _constants;
+    }
+
+    return nullptr;
 }
