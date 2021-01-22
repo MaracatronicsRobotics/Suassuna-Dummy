@@ -56,7 +56,8 @@ private:
 
 public slots:
     // Internal
-    virtual void setSpeed(int teamId, int playerId, float vx, float vy, float vw) = 0;
+    virtual void setLinearSpeed(int teamId, int playerId, float vx, float vy) = 0;
+    virtual void setAngularSpeed(int teamId, int playerId, float vw) = 0;
     virtual void dribble(int teamId, int playerId, bool enable) = 0;
     virtual void kick(int teamId, int playerId, float power) = 0;
     virtual void chipKick(int teamId, int playerId, float power) = 0;

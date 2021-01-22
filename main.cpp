@@ -30,13 +30,13 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     a.setApplicationVersion(APP_VERSION);
 
-    std::cout << Text::bold(Text::center(" ____                                               ")) << '\n';
-    std::cout << Text::bold(Text::center("/ ___|  _   _   __ _  ___  ___  _   _  _ __    __ _ ")) << '\n';
-    std::cout << Text::bold(Text::center("\\___ \\ | | | | / _` |/ __|/ __|| | | || '_ \\  / _` |")) << '\n';
-    std::cout << Text::bold(Text::center(" ___) || |_| || (_| |\\__ \\\\__ \\| |_| || | | || (_| |")) << '\n';
-    std::cout << Text::bold(Text::center("|____/  \\__,_| \\__,_||___/|___/ \\__,_||_| |_| \\__,_|")) << '\n';
-    std::cout << Text::bold(Text::center("Made with 💛 by Maracatronics Robotics Team.")) << '\n';
-    std::cout << Text::bold(Text::center("Version " + a.applicationVersion().toStdString())) << '\n' << '\n';
+    std::cout << Text::bold(Text::center(" ____                                               ")) + '\n';
+    std::cout << Text::bold(Text::center("/ ___|  _   _   __ _  ___  ___  _   _  _ __    __ _ ")) + '\n';
+    std::cout << Text::bold(Text::center("\\___ \\ | | | | / _` |/ __|/ __|| | | || '_ \\  / _` |")) + '\n';
+    std::cout << Text::bold(Text::center(" ___) || |_| || (_| |\\__ \\\\__ \\| |_| || | | || (_| |")) + '\n';
+    std::cout << Text::bold(Text::center("|____/  \\__,_| \\__,_||___/|___/ \\__,_||_| |_| \\__,_|")) + '\n';
+    std::cout << Text::bold(Text::center("Made with 💛 by Maracatronics Robotics Team.")) + '\n';
+    std::cout << Text::bold(Text::center("Version " + a.applicationVersion().toStdString())) + '\n' + '\n';
 
     // Setup ExitHandler
     ExitHandler::setApplication(&a);
@@ -53,6 +53,10 @@ int main(int argc, char *argv[])
 
     // Stop Suassuna
     suassuna->stop();
+
+    // Delete suassuna and  constants
+    delete suassuna;
+    delete constants;
 
     return exec;
 }

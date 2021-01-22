@@ -56,7 +56,8 @@ private:
 
 public slots:
     // Internal inherited methods
-    void setSpeed(int teamId, int playerId, float vx, float vy, float vw);
+    void setLinearSpeed(int teamId, int playerId, float vx, float vy);
+    void setAngularSpeed(int teamId, int playerId, float vw);
     void dribble(int teamId, int playerId, bool enable);
     void kick(int teamId, int playerId, float power);
     void chipKick(int teamId, int playerId, float power);

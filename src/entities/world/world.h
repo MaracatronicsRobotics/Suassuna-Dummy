@@ -51,7 +51,7 @@ private:
     void stopAndDeleteEntities();
 
     // Hashtable for entities
-    QMap<int, Entity*> _moduleEntities;
+    QMap<int, QHash<int, Entity*>*> _moduleEntities;
 };
 
 #endif // WORLD_H

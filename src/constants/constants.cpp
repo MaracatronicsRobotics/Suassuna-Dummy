@@ -21,6 +21,10 @@
 
 #include "constants.h"
 
+// Including vision filters to access their static functions
+#include <src/entities/vision/filters/loss/lossfilter.h>
+#include <src/entities/vision/filters/noise/noisefilter.h>
+
 Constants::Constants(QString fileName) {
     _fileName = fileName;
 
@@ -38,6 +42,7 @@ Constants::Constants(QString fileName) {
     readThreadConstants();
     readVisionConstants();
     readSimActuatorConstants();
+    readTeamConstants();
 }
 
 void Constants::readThreadConstants() {
@@ -46,7 +51,7 @@ void Constants::readThreadConstants() {
 
     // Filling vars
     _threadFrequency = threadMap["threadFrequency"].toInt();
-    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded threadFrequency: " + std::to_string(_threadFrequency)) << '\n';
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded threadFrequency: " + std::to_string(_threadFrequency)) + '\n';
 }
 
 void Constants::readVisionConstants() {
@@ -55,22 +60,50 @@ void Constants::readVisionConstants() {
 
     // Filling vars
     _visionAddress = visionMap["visionAddress"].toString();
-    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded visionAddress: " + _visionAddress.toStdString()) << '\n';
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded visionAddress: " + _visionAddress.toStdString()) + '\n';
 
     _visionPort = visionMap["visionPort"].toUInt();
-    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded visionPort: " + std::to_string(_visionPort)) << '\n';
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded visionPort: " + std::to_string(_visionPort)) + '\n';
+
+    _lossFilterTime = visionMap["lossFilterTime"].toUInt();
+    LossFilter::setLossTime(_lossFilterTime);
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded lossFilterTime: " + std::to_string(_lossFilterTime)) + '\n';
+
+    _noiseFilterTime = visionMap["noiseFilterTime"].toUInt();
+    NoiseFilter::setNoiseTime(_noiseFilterTime);
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded noiseFilterTime: " + std::to_string(_noiseFilterTime)) + '\n';
+
+    _useGeometryFromCamera = visionMap["useGeometryFromCamera"].toBool();
+    QString useGeomFromCameraStr = (_useGeometryFromCamera ? "true" : "false");
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded useGeometryFromCamera: " + useGeomFromCameraStr.toStdString()) + '\n';
 }
 
 void Constants::readSimActuatorConstants() {
     // Taking simActuator mapping in json
-    QVariantMap visionMap = documentMap()["SimActuator"].toMap();
+    QVariantMap actuatorMap = documentMap()["SimActuator"].toMap();
 
     // Filling vars
-    _simActuatorAddress = visionMap["simActuatorAddress"].toString();
-    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded simActuatorAddress: " + _simActuatorAddress.toStdString()) << '\n';
+    _simActuatorAddress = actuatorMap["simActuatorAddress"].toString();
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded simActuatorAddress: " + _simActuatorAddress.toStdString()) + '\n';
 
-    _simActuatorPort = visionMap["simActuatorPort"].toUInt();
-    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded simActuatorPort: " + std::to_string(_simActuatorPort)) << '\n';
+    _simActuatorPort = actuatorMap["simActuatorPort"].toUInt();
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded simActuatorPort: " + std::to_string(_simActuatorPort)) + '\n';
+}
+
+void Constants::readTeamConstants() {
+    // Taking team mapping in json
+    QVariantMap teamMap = documentMap()["Team"].toMap();
+
+    // Filling vars
+    _teamColorName = teamMap["teamColor"].toString().toLower();
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded teamColorName: " + _teamColorName.toStdString()) + '\n';
+
+    QString teamSideAux = teamMap["teamSide"].toString().toLower();
+    _teamSide = (teamSideAux == "left" ? FieldSide(Sides::SIDE::LEFT) : FieldSide(Sides::SIDE::RIGHT));
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded teamSide: " + teamSideAux.toStdString()) + '\n';
+
+    _qtPlayers = teamMap["qtPlayers"].toUInt();
+    std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded qtPlayers: " + std::to_string(qtPlayers())) + '\n';
 }
 
 int Constants::threadFrequency() {
@@ -85,10 +118,38 @@ quint16 Constants::visionPort() {
     return _visionPort;
 }
 
+int Constants::lossFilterTime() {
+    return _lossFilterTime;
+}
+
+int Constants::noiseFilterTime() {
+    return _noiseFilterTime;
+}
+
+bool Constants::useGeometryFromCamera() {
+    return _useGeometryFromCamera;
+}
+
 QString Constants::simActuatorAddress() {
     return _simActuatorAddress;
 }
 
 quint16 Constants::simActuatorPort() {
     return _simActuatorPort;
+}
+
+QString Constants::teamColorName() {
+    return _teamColorName;
+}
+
+Colors::Color Constants::teamColor() {
+    return (_teamColorName == "blue" ? Colors::Color::BLUE : Colors::Color::YELLOW);
+}
+
+FieldSide Constants::teamSide() {
+    return _teamSide;
+}
+
+int Constants::qtPlayers() {
+    return _qtPlayers;
 }

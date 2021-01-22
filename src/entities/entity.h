@@ -45,12 +45,15 @@ public:
     void setLoopFrequency(int hz);
     void setPriority(int priority);
     void enableEntity();
+    void disableLoop();
     void stopEntity();
 
     // Getters
     int loopFrequency();
     int entityPriority();
+    int entityId();
     bool isEnabled();
+    bool isLoopEnabled();
     EntityType entityType();
 
 private:
@@ -66,7 +69,9 @@ private:
     int _loopFrequency;
     int _entityPriority;
     bool _isEnabled;
+    bool _loopEnabled;
     EntityType _entityType;
+    static int _id;
 
     // Entity timer
     Timer _entityTimer;

@@ -35,7 +35,7 @@ SimActuator::SimActuator(Constants *constants) {
 
 void SimActuator::initialization() {
     connectToNetwork();
-    std::cout << Text::cyan("[ACTUATOR] ", true) << Text::bold("Started at address '" + _actuatorAddress.toStdString() + "' and port '" + std::to_string(_actuatorPort) + "'.") << '\n';
+    std::cout << Text::cyan("[ACTUATOR] ", true) + Text::bold("Started at address '" + _actuatorAddress.toStdString() + "' and port '" + std::to_string(_actuatorPort) + "'.") + '\n';
 }
 
 void SimActuator::loop() {
@@ -53,7 +53,7 @@ void SimActuator::loop() {
 
 void SimActuator::finalization() {
     finishConnection();
-    std::cout << Text::cyan("[ACTUATOR] " , true) << Text::bold("Client finished.") << '\n';
+    std::cout << Text::cyan("[ACTUATOR] " , true) + Text::bold("Client finished.") + '\n';
 }
 
 void SimActuator::connectToNetwork() {
@@ -106,14 +106,20 @@ void SimActuator::sendData(robotData data) {
     std::string buffer;
     packet.SerializeToString(&buffer);
     if(_actuatorClient->write(buffer.c_str(), buffer.length()) == -1) {
-        std::cout << Text::cyan("[ACTUATOR] " , true) << Text::red("Failed to write to socket: ", true) << Text::red(_actuatorClient->errorString().toStdString(), true) << '\n';
+        std::cout << Text::cyan("[ACTUATOR] " , true) << Text::red("Failed to write to socket: ", true) << Text::red(_actuatorClient->errorString().toStdString(), true) + '\n';
     }
 }
 
-void SimActuator::setSpeed(int teamId, int playerId, float vx, float vy, float vw) {
+void SimActuator::setLinearSpeed(int teamId, int playerId, float vx, float vy) {
     _dataMutex.lockForWrite();
     _robotData[teamId][playerId].vx = vx;
     _robotData[teamId][playerId].vy = vy;
+    _robotData[teamId][playerId].isUpdated = false;
+    _dataMutex.unlock();
+}
+
+void SimActuator::setAngularSpeed(int teamId, int playerId, float vw) {
+    _dataMutex.lockForWrite();
     _robotData[teamId][playerId].vw = vw;
     _robotData[teamId][playerId].isUpdated = false;
     _dataMutex.unlock();
@@ -143,7 +149,7 @@ void SimActuator::chipKick(int teamId, int playerId, float power) {
 
 Constants* SimActuator::getConstants() {
     if(_constants == nullptr) {
-        std::cout << Text::red("[ERROR] ", true) << Text::bold("Constants with nullptr value at SimActuator") << '\n';
+        std::cout << Text::red("[ERROR] ", true) << Text::bold("Constants with nullptr value at SimActuator") + '\n';
     }
     else {
         return _constants;

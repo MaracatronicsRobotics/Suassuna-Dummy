@@ -5,7 +5,16 @@
 	
 	"Vision":{
 		"visionAddress": "224.5.23.2",
-		"visionPort": 10002
+		"visionPort": 10002,
+		"lossFilterTime": 300,
+		"noiseFilterTime": 300,
+		"useGeometryFromCamera": false
+	},
+	
+	"Team":{
+		"teamColor": "blue",
+		"teamSide": "left",
+		"qtPlayers": 11
 	},
 	
 	"SimActuator":{

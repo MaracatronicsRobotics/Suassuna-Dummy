@@ -28,6 +28,8 @@
 #include <QString>
 #include <QFile>
 #include <src/utils/text/text.h>
+#include <src/utils/types/color/color.h>
+#include <src/utils/types/fieldside/fieldside.h>
 
 class Constants
 {
@@ -40,10 +42,19 @@ public:
     // Vision
     QString visionAddress();
     quint16 visionPort();
+    int lossFilterTime();
+    int noiseFilterTime();
+    bool useGeometryFromCamera();
 
     // SimActuator
     QString simActuatorAddress();
     quint16 simActuatorPort();
+
+    // Team
+    QString teamColorName();
+    Colors::Color teamColor();
+    FieldSide teamSide();
+    int qtPlayers();
 
 protected:
     QVariantMap documentMap() { return _documentMap; }
@@ -66,11 +77,20 @@ private:
     void readVisionConstants();
     QString _visionAddress;
     quint16 _visionPort;
+    int _lossFilterTime;
+    int _noiseFilterTime;
+    bool _useGeometryFromCamera;
 
     // SimActuator
     void readSimActuatorConstants();
     QString _simActuatorAddress;
     quint16 _simActuatorPort;
+
+    // Team
+    void readTeamConstants();
+    QString _teamColorName;
+    int _qtPlayers;
+    FieldSide _teamSide;
 };
 
 #endif // CONSTANTS_H

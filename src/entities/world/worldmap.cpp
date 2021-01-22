@@ -21,492 +21,169 @@
 
 #include "worldmap.h"
 
-// Includes Qt library
-#include <QtCore/QtCore>
+#include <src/utils/text/text.h>
 
-// Selects namespace
-using namespace soccertypes;
+WorldMap::WorldMap(Constants *constants, FieldSide ourSide, Field *field) {
+    // Taking constants
+    _constants = constants;
 
-WorldMap::WorldMap() {
-    // Initializes the variables
-    _nTeams = 0;
-    _nBalls = 0;
+    // Fill player objects
+    for(int i = Colors::Color::YELLOW; i <= Colors::Color::BLUE; i++) {
+        _playerObjects.insert(Colors::Color(i), new QMap<quint8, Object>());
+        QMap<quint8, Object> *_teamObjects = _playerObjects.value(Colors::Color(i));
+        for(int j = 0; j < getConstants()->qtPlayers(); j++) {
+            _teamObjects->insert(j, Object());
+        }
+    }
 
-    // Initialize empty hashes
-    _validTeams.clear();
-    _teams.clear();
-    _validBalls.clear();
-    _ballsPositions.clear();
-    _ballsVelocities.clear();
-
-    // Lockers and mutexes
-    _teamsLock = new QReadWriteLock();
-    _ballsLock = new QReadWriteLock();
-    _detectionMutex = new QMutex();
+    // Initializing locations
+    _locations = new Locations(ourSide, field);
 }
 
 WorldMap::~WorldMap() {
-    // Delete QReadWrite lockers and mutexes
-    delete _ballsLock;
-    delete _teamsLock;
-    delete _detectionMutex;
-}
+    // Get teams list
+    QList<Colors::Color> teamList = _playerObjects.keys();
 
-void WorldMap::receiveGeometryData(SSL_GeometryData geometData){
-}
+    // For each team
+    for(QList<Colors::Color>::iterator it = teamList.begin(); it != teamList.end(); it++) {
+        // Take team associated objects
+        QMap<quint8, Object> *teamObjects = _playerObjects.value((*it));
 
-void WorldMap::receiveDetectionData(SSL_DetectionFrame detectData){
-    _detectionMutex->lock();
-    updateBlueTeam(&detectData);
-    updateYellowTeam(&detectData);
-    _detectionMutex->unlock();
-}
+        // Clear team association
+        teamObjects->clear();
 
-void WorldMap::updateBlueTeam(SSL_DetectionFrame* detectData){
-    QList<quint8> recentPlayers;
-    // Blue team
-    if(!_validTeams.contains(Colors::BLUE)){
-        addTeam(Colors::BLUE, "blue");
+        // Delete pointer
+        delete teamObjects;
     }
-    for(int i = 0; i < detectData->robots_blue_size(); i++){
-        // Add/update player
-        quint8 robotId = static_cast<quint8>(detectData->robots_blue(i).robot_id());
-        if(!players(Colors::BLUE).contains(robotId)) {
-            addPlayer(Colors::BLUE, robotId);
-        }
-        recentPlayers.append(robotId);
 
-        // Checks if this robot has recent position data and update it
-        if(detectData->robots_blue(i).has_x() && detectData->robots_blue(i).has_y()){
-            Position robotPosition = Position(true, detectData->robots_blue(i).x(), detectData->robots_blue(i).y(), 0.0f);
-            setPlayerPosition(Colors::BLUE, robotId, robotPosition);
-        }
+    // Clear teams
+    _playerObjects.clear();
 
-        // Checks if this robot has recent orientation data and update it
-        if(detectData->robots_blue(i).has_orientation()){
-            Angle robotOrientation = Angle(true, detectData->robots_blue(i).orientation());
-            setPlayerOrientation(Colors::BLUE, robotId, robotOrientation);
-        }
+    // Delete locations
+    delete _locations;
+}
+
+Constants* WorldMap::getConstants() {
+    if(_constants == nullptr) {
+        std::cout << Text::red("[ERROR] ", true) << Text::bold("Constants with nullptr value at WorldMap") + '\n';
     }
-    // Deletes players that weren't in the most recent detection packet
-    deleteOldPlayers(&recentPlayers, Colors::BLUE);
-}
-
-void WorldMap::updateYellowTeam(SSL_DetectionFrame* detectData){
-    QList<quint8> recentPlayers;
-    // Yellow team
-    if(!_validTeams.contains(Colors::YELLOW)){
-        addTeam(Colors::YELLOW, "yellow");
+    else {
+        return _constants;
     }
-    for(int i = 0; i < detectData->robots_yellow_size(); i++){
-        // Add/update player
-        quint8 robotId = static_cast<quint8>(detectData->robots_yellow(i).robot_id());
-        if(!players(Colors::YELLOW).contains(robotId)) {
-            addPlayer(Colors::YELLOW, robotId);
-        }
-        recentPlayers.append(robotId);
 
-        // Checks if this robot has position data and update it in wm
-        if(detectData->robots_yellow(i).has_x() && detectData->robots_yellow(i).has_y()){
-            Position robotPosition = Position(true, detectData->robots_yellow(i).x(), detectData->robots_yellow(i).y(), 0.0f);
-            setPlayerPosition(Colors::YELLOW, robotId, robotPosition);
-        }
+    return nullptr;
+}
 
-        // Checks if this robot has orientation data and update it in wm
-        if(detectData->robots_yellow(i).has_orientation()){
-            Angle robotOrientation = Angle(true, detectData->robots_yellow(i).orientation());
-            setPlayerOrientation(Colors::YELLOW, robotId, robotOrientation);
-        }
+
+Object WorldMap::getPlayer(Colors::Color teamColor, quint8 playerId) {
+    _playerMutex.lockForRead();
+
+    // Check if contains teamColor
+    if(!_playerObjects.contains(teamColor)) {
+        std::cout << Text::red("[ERROR] ", true) + Text::bold("WorldMap::getPlayer(" + std::to_string(teamColor) + ", quint8), teamColor " + std::to_string(teamColor) + " does not exists.") + '\n';
+        return Object();
     }
-    // Deletes players that weren't in the most recent detection packet
-    deleteOldPlayers(&recentPlayers, Colors::YELLOW);
-}
 
-void WorldMap::deleteOldPlayers(QList<quint8>* recentPlayers, Colors::Color teamNum){
-    QList<quint8> registeredPlayers = players(teamNum);
-    QListIterator<quint8> it(registeredPlayers);
-    while(it.hasNext()){
-        quint8 next = it.next();
-        if(!recentPlayers->contains(next)){
-            delPlayer(teamNum, next);
-        }
+    // Taking map for team
+    QMap<quint8, Object> *_teamObjects = _playerObjects.value(teamColor);
+
+    // Check if contains required player
+    if(!_teamObjects->contains(playerId)) {
+        std::cout << Text::red("[ERROR] ", true) + Text::bold("WorldMap::getPlayer(teamColor, " + std::to_string(playerId) + "), playerId " + std::to_string(playerId) + " does not exists.") + '\n';
+        return Object();
     }
+
+    // Take object
+    Object requiredObject = _teamObjects->value(playerId);
+
+    _playerMutex.unlock();
+
+    return requiredObject;
 }
 
-void WorldMap::addTeam(uint8 teamNum, const QString& name) {
-    _teamsLock->lockForWrite();
-    // Adds the team
-    (void) _teams.remove(teamNum);
-    (void) _validTeams.insert(teamNum, true);
-    _teams[teamNum] = Team(teamNum, name);
-    _nTeams++;
-    _teamsLock->unlock();
+Object WorldMap::getBall() {
+    _ballMutex.lockForRead();
+    Object ballObject = _ballObject;
+    _ballMutex.unlock();
+
+    return ballObject;
 }
 
-void WorldMap::delTeam(uint8 teamNum) {
-    _teamsLock->lockForWrite();
-    // Deletes the team
-    (void) _validTeams.remove(teamNum);
-    (void) _teams.remove(teamNum);
-    _nTeams--;
-    _teamsLock->unlock();
+void WorldMap::addPlayer(quint8 playerId, Player *playerPointer) {
+    _playerPointers.insert(playerId, playerPointer);
 }
 
-QList<uint8> WorldMap::teams() const {
-    _teamsLock->lockForRead();
-    // Adds the teams to the list
-    QList<uint8> teamsList;
-    QHashIterator<uint8,Team> it(_teams);
-    while (it.hasNext()) {
-        teamsList.append(it.next().key());
+Player* WorldMap::getPlayerPointer(quint8 playerId) {
+    if(!_playerPointers.contains(playerId)) {
+        std::cout << Text::red("[ERROR] ", true) + Text::bold("WorldMap::getPlayerPointer(" + std::to_string(playerId) + "), playerId " + std::to_string(playerId) + " does not exists.") + '\n';
+        return nullptr;
     }
-    _teamsLock->unlock();
 
-    // Returns the list
-    return(teamsList);
+    return _playerPointers.value(playerId);
 }
 
-const QString WorldMap::teamName(uint8 teamNum) const {
-    _teamsLock->lockForRead();
-    // Returns the team name
-    if (_validTeams.value(teamNum)) {
-        QString teamName = _teams[teamNum].name();
-        _teamsLock->unlock();
-        return(teamName);
+QList<quint8> WorldMap::getAvailablePlayers(Colors::Color teamColor) {
+    QList<quint8> playersList;
+    if(!_playerObjects.contains(teamColor)) {
+        std::cout << Text::red("[ERROR] ", true) + Text::bold("WorldMap::getAvailablePlayers(" + std::to_string(teamColor) + "), teamColor " + std::to_string(teamColor) + " does not exists.") + '\n';
+        return playersList;
     }
-    _teamsLock->unlock();
 
-    // Returns an invalid name
-    return(_invalidName);
-}
+    _playerMutex.lockForRead();
+    // Take team players
+    QMap<quint8, Object> *teamPlayers = _playerObjects.value(teamColor);
+    QMap<quint8, Object>::iterator it;
 
-uint8 WorldMap::teamNumber(const QString& name) const {
-    _teamsLock->lockForRead();
-    // Runs the teams searching for the wanted name
-    QHashIterator<uint8,Team> it(_teams);
-    while (it.hasNext()) {
-        it.next();
-        if (it.value().name() == name) {
-            uint8 teamNumber = it.value().number();
-            _teamsLock->unlock();
-            return(teamNumber);
+    for(it = teamPlayers->begin(); it != teamPlayers->end(); it++) {
+        // Take player id and object
+        quint8 playerId = it.key();
+        Object playerObject = it.value();
+
+        // If position is not invalid (player exists in field) add to the playersList
+        if(!playerObject.getPosition().isInvalid()) {
+            playersList.push_back(playerId);
         }
     }
-    _teamsLock->unlock();
+    _playerMutex.unlock();
 
-    // Returns an invalid number
-    return(_invalidNumber);
+    return playersList;
 }
 
-void WorldMap::addBall(uint8 ballNum) {
-    _ballsLock->lockForWrite();
-    // Adds the ball
-    (void) _validBalls.insert(ballNum, true);
-    (void) _ballsPositions.insert(ballNum, new Position(false,0,0,0));
-    (void) _ballsVelocities.insert(ballNum, new Velocity(false,0,0));
-    _ballsLock->unlock();
-}
+void WorldMap::updatePlayer(Colors::Color teamColor, quint8 playerId, Object playerObject) {
+    _playerMutex.lockForWrite();
 
-void WorldMap::delBall(uint8 ballNum) {
-    _ballsLock->lockForWrite();
-    // Deletes the ball
-    (void) _validBalls.remove(ballNum);
-    (void) _ballsPositions.remove(ballNum);
-    (void) _ballsVelocities.remove(ballNum);
-    _ballsLock->unlock();
-}
-
-QList<uint8> WorldMap::balls() const {
-    _ballsLock->lockForRead();
-    // Adds the balls to the list
-    QList<uint8> ballsList;
-    QHashIterator<uint8,Position*> it(_ballsPositions);
-    while (it.hasNext()) {
-        ballsList.append(it.next().key());
+    // If !contains teamColor, create it
+    if(!_playerObjects.contains(teamColor)) {
+        _playerObjects.insert(teamColor, new QMap<quint8, Object>());
     }
-    _ballsLock->unlock();
 
-    // Returns the list
-    return(ballsList);
+    // Taking map for the required team
+    QMap<quint8, Object> *_teamObjects = _playerObjects.value(teamColor);
+
+    // If !contains a player with playerId, create it
+    if(!_teamObjects->contains(playerId)) {
+        _teamObjects->insert(playerId, Object());
+    }
+
+    // Updating required object
+    _teamObjects->insert(playerId, playerObject);
+
+    Object oj = _teamObjects->value(playerId);
+
+    _playerMutex.unlock();
+}
+void WorldMap::updateBall(Object ballObject) {
+    _ballMutex.lockForWrite();
+
+    _ballObject = ballObject;
+
+    _ballMutex.unlock();
 }
 
-const Position WorldMap::ballPosition(uint8 ballNum) const {
-    _ballsLock->lockForRead();
-    // Returns the ball position
-    if (_validBalls.value(ballNum)) {
-        Position ballPosition = *(_ballsPositions[ballNum]);
-        _ballsLock->unlock();
-        return(ballPosition);
-    }
-    _ballsLock->unlock();
-
-    // Returns an invalid position
-    return(_invalidPosition);
+void WorldMap::updateGeometry(SSL_GeometryData geometryData) {
+    _locations->updateGeometryData(geometryData);
 }
 
-const Velocity WorldMap::ballVelocity(uint8 ballNum) const {
-    _ballsLock->lockForRead();
-    // Returns the ball velocity
-    if (_validBalls.value(ballNum)) {
-        Velocity ballVelocity = *(_ballsVelocities[ballNum]);
-        _ballsLock->unlock();
-        return(ballVelocity);
-    }
-    _ballsLock->unlock();
-
-    // Returns an invalid velocity
-    return(_invalidVelocity);
-}
-
-void WorldMap::setBallPosition(uint8 ballNum, const Position& position) {
-    _ballsLock->lockForWrite();
-    // Sets the ball position
-    if (_validBalls.value(ballNum)) {
-        (void) _ballsPositions.value(ballNum)->operator =(position);
-    }
-    _ballsLock->unlock();
-}
-
-void WorldMap::setBallVelocity(uint8 ballNum, const Velocity& velocity) {
-    _ballsLock->lockForWrite();
-    // Sets the ball velocity
-    if (_validBalls.value(ballNum)) {
-        (void) _ballsVelocities.value(ballNum)->operator =(velocity);
-    }
-    _ballsLock->unlock();
-}
-
-void WorldMap::addPlayer(uint8 teamNum, uint8 playerNum) {
-    _teamsLock->lockForWrite();
-    // Adds the player
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].addPlayer(playerNum);
-    }
-    _teamsLock->unlock();
-}
-
-void WorldMap::delPlayer(uint8 teamNum, uint8 playerNum) {
-    _teamsLock->lockForWrite();
-    // Deletes the player
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].delPlayer(playerNum);
-    }
-    _teamsLock->unlock();
-}
-
-QList<uint8> WorldMap::players(uint8 teamNum) const {
-    _teamsLock->lockForRead();
-    // Returns the players list
-    if (_validTeams.value(teamNum)) {
-        QList<uint8> playersList = _teams[teamNum].players();
-        _teamsLock->unlock();
-        return(playersList);
-    }
-    _teamsLock->unlock();
-
-    // Returns an empty list
-    return(QList<uint8>());
-}
-
-const Position& WorldMap::playerPosition(uint8 teamNum, uint8 playerNum) const {
-    _teamsLock->lockForRead();
-    // Returns an invalid position
-    if (!_validTeams.value(teamNum)) {
-        _teamsLock->unlock();
-        return(_invalidPosition);
-    }
-    _teamsLock->unlock();
-
-    // Returns the player position
-    return(*(_teams[teamNum].position(playerNum)));
-}
-
-const Angle& WorldMap::playerOrientation(uint8 teamNum, uint8 playerNum) const {
-    _teamsLock->lockForRead();
-    // Returns an invalid orientation
-    if (!_validTeams.value(teamNum)) {
-        _teamsLock->unlock();
-        return(_invalidAngle);
-    }
-    _teamsLock->unlock();
-
-    // Returns the player orientation
-    return(*(_teams[teamNum].orientation(playerNum)));
-}
-
-const Velocity& WorldMap::playerVelocity(uint8 teamNum, uint8 playerNum) const {
-    _teamsLock->lockForRead();
-    // Returns an invalid velocity
-    if (!_validTeams.value(teamNum)) {
-        _teamsLock->unlock();
-        return(_invalidVelocity);
-    }
-    _teamsLock->unlock();
-
-    // Returns the player velocity
-    return(*(_teams[teamNum].velocity(playerNum)));
-}
-
-const AngularSpeed& WorldMap::playerAngularSpeed(uint8 teamNum, uint8 playerNum) const {
-    _teamsLock->lockForRead();
-    // Returns an invalid speed
-    if (!_validTeams.value(teamNum)) {
-        _teamsLock->unlock();
-        return(_invalidAngularSpeed);
-    }
-    _teamsLock->unlock();
-
-    // Returns the player angular speed
-    return(*(_teams[teamNum].angularSpeed(playerNum)));
-}
-
-bool WorldMap::ballPossession(uint8 teamNum, uint8 playerNum) const {
-    _teamsLock->lockForRead();
-    // Returns the flag
-    if (!_validTeams.value(teamNum)) {
-        _teamsLock->unlock();
-        return(false);
-    }
-    bool ballPossesion = _teams[teamNum].ballPossession(playerNum);
-    _teamsLock->unlock();
-
-    // Returns the flag
-    return(ballPossesion);
-}
-
-bool WorldMap::kickEnabled(quint8 teamNum, quint8 playerNum) const {
-    _teamsLock->lockForRead();
-    // Returns the flag
-    if (!_validTeams.value(teamNum)) {
-        _teamsLock->unlock();
-        return(false);
-    }
-    bool kickEnabled = _teams[teamNum].kickEnabled(playerNum);
-    _teamsLock->unlock();
-
-    // Returns the flag
-    return(kickEnabled);
-}
-
-bool WorldMap::dribbleEnabled(quint8 teamNum, quint8 playerNum) const {
-    _teamsLock->lockForRead();
-    // Returns the flag
-    if (!_validTeams.value(teamNum)) {
-        _teamsLock->unlock();
-        return(false);
-    }
-    bool dribbleEnabled = _teams[teamNum].dribbleEnabled(playerNum);
-    _teamsLock->unlock();
-
-    // Returns the flag
-    return(dribbleEnabled);
-}
-
-unsigned char WorldMap::batteryCharge(quint8 teamNum, quint8 playerNum) const {
-    _teamsLock->lockForRead();
-    // Returns the flag
-    if (!_validTeams.value(teamNum)) {
-        _teamsLock->unlock();
-        return(false);
-    }
-    unsigned char batteryCharge = _teams[teamNum].batteryCharge(playerNum);
-    _teamsLock->unlock();
-
-    // Returns the flag
-    return(batteryCharge);
-}
-
-unsigned char WorldMap::capacitorCharge(quint8 teamNum, quint8 playerNum) const {
-    _teamsLock->lockForRead();
-    // Returns the flag
-    if (!_validTeams.value(teamNum)) {
-        _teamsLock->unlock();
-        return(false);
-    }
-    unsigned char capacitorCharge = _teams[teamNum].capacitorCharge(playerNum);
-    _teamsLock->unlock();
-
-    // Returns the flag
-    return(capacitorCharge);
-}
-
-void WorldMap::setPlayerPosition(uint8 teamNum, uint8 playerNum, const Position& position) {
-    _teamsLock->lockForWrite();
-    // Sets the player position
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].setPosition(playerNum, position);
-    }
-    _teamsLock->unlock();
-}
-
-void WorldMap::setPlayerOrientation(uint8 teamNum, uint8 playerNum, const Angle& orientation) {
-    _teamsLock->lockForWrite();
-    // Sets the player orientation
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].setOrientation(playerNum, orientation);
-    }
-    _teamsLock->unlock();
-}
-
-void WorldMap::setPlayerVelocity(uint8 teamNum, uint8 playerNum, const Velocity& velocity) {
-    _teamsLock->lockForWrite();
-    // Sets the player velocity
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].setVelocity(playerNum, velocity);
-    }
-    _teamsLock->unlock();
-}
-
-void WorldMap::setPlayerAngularSpeed(uint8 teamNum, uint8 playerNum, const AngularSpeed& angularSpeed) {
-    _teamsLock->lockForWrite();
-    // Sets the player angular speed
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].setAngularSpeed(playerNum, angularSpeed);
-    }
-    _teamsLock->unlock();
-}
-
-void WorldMap::setBallPossession(uint8 teamNum, uint8 playerNum, bool possession) {
-    _teamsLock->lockForWrite();
-    // Sets the flag
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].setBallPossession(playerNum, possession);
-    }
-    _teamsLock->unlock();
-}
-
-void WorldMap::setKickEnabled(uint8 teamNum, uint8 playerNum, bool status){
-    _teamsLock->lockForWrite();
-    // Sets the flag
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].setPlayerKickStatus(playerNum, status);
-    }
-    _teamsLock->unlock();
-}
-
-void WorldMap::setDribbleEnabled(uint8 teamNum, uint8 playerNum, bool status){
-    _teamsLock->lockForWrite();
-    // Sets the flag
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].setPlayerDribbleStatus(playerNum, status);
-    }
-    _teamsLock->unlock();
-}
-
-void WorldMap::setBatteryCharge(uint8 teamNum, uint8 playerNum, unsigned char charge){
-    _teamsLock->lockForWrite();
-    // Sets the flag
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].setPlayerBatteryCharge(playerNum, charge);
-    }
-    _teamsLock->unlock();
-}
-
-void WorldMap::setCapacitorCharge(uint8 teamNum, uint8 playerNum, unsigned char charge){
-    _teamsLock->lockForWrite();
-    // Sets the flag
-    if (_validTeams.value(teamNum)) {
-        _teams[teamNum].setPlayerCapacitorCharge(playerNum, charge);
-    }
-    _teamsLock->unlock();
+Locations* WorldMap::getLocations() {
+    return _locations;
 }
