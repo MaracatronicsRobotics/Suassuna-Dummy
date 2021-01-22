@@ -26,8 +26,11 @@
 
 #include <src/entities/entity.h>
 #include <src/constants/constants.h>
+#include <src/utils/types/color/color.h>
+#include <src/utils/types/object/object.h>
 #include <include/messages_robocup_ssl_wrapper.pb.h>
 #include <include/messages_robocup_ssl_detection.pb.h>
+#include <include/messages_robocup_ssl_robot_status.pb.h>
 
 class Vision : public Entity
 {
@@ -54,9 +57,22 @@ private:
     QString _visionAddress;
     quint16 _visionPort;
 
+    // Objects control
+    QMap<Colors::Color, QMap<quint8, Object*>*> _playerObjects;
+    Object _ballObject;
+    void updatePlayer(Colors::Color teamColor, quint8 playerId, SSL_DetectionRobot player);
+    void updateBall(SSL_DetectionBall ball);
+
+    // Vision reached control
+    bool *_blueControl;
+    bool *_yellowControl;
+    bool _ballControl;
+    void clearControls();
+
 signals:
-    void sendDetectData(SSL_DetectionFrame detectData);
-    void sendGeometData(SSL_GeometryData geometData);
+    void sendPlayer(Colors::Color teamColor, quint8 playerId, Object playerObject);
+    void sendBall(Object ballObject);
+    void sendGeometryData(SSL_GeometryData geometData);
 };
 
 #endif // VISION_H

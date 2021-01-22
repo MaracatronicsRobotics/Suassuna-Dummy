@@ -21,93 +21,61 @@
 
 #ifndef WORLDMAP_H
 #define WORLDMAP_H
+
 #include <QObject>
-#include <src/utils/types/types.h>
-#include <src/utils/types/typesNamespace.h>
-#include <src/utils/color/color.h>
-#include <include/messages_robocup_ssl_wrapper.pb.h>
-#include <include/messages_robocup_ssl_detection.pb.h>
+#include <QMap>
 
-using namespace soccertypes;
+#include <src/constants/constants.h>
+#include <src/entities/coach/basecoach.h>
+#include <src/entities/world/locations/locations.h>
+#include <src/utils/types/color/color.h>
+#include <src/utils/types/object/object.h>
+#include <include/messages_robocup_ssl_geometry.pb.h>
 
-class WorldMap : public QObject{
+class WorldMap : public QObject
+{
     Q_OBJECT
-    public slots:
-        void receiveDetectionData(SSL_DetectionFrame detectData);
-        void receiveGeometryData(SSL_GeometryData geometData);
+public:
+    WorldMap(Constants *constants, FieldSide ourSide, Field *field);
+    ~WorldMap();
 
-    public:
-        WorldMap();
-        ~WorldMap();
+    // Objects getter
+    Object getPlayer(Colors::Color teamColor, quint8 playerId);
+    Object getBall();
 
-    private:
-        mutable QReadWriteLock* _teamsLock;
-        mutable QReadWriteLock* _ballsLock;
-        mutable QMutex* _detectionMutex;
+    // Player pointer management
+    void addPlayer(quint8 playerId, Player *playerPointer);
+    Player* getPlayerPointer(quint8 playerId);
 
-        // Teams info
-        uint8 _nTeams;
-        QHash<uint8,bool> _validTeams;
-        QHash<uint8,Team> _teams;
+    // Utilities
+    QList<quint8> getAvailablePlayers(Colors::Color teamColor);
 
-        // Balls info
-        uint8 _nBalls;
-        QHash<uint8,bool>      _validBalls;
-        QHash<uint8,Position*> _ballsPositions;
-        QHash<uint8,Velocity*> _ballsVelocities;
+    // Locations getter
+    Locations* getLocations();
 
-        // Invalid types
-        Angle        _invalidAngle;
-        AngularSpeed _invalidAngularSpeed;
-        Position     _invalidPosition;
-        Velocity     _invalidVelocity;
-        QString      _invalidName;
-        static const uint8 _invalidNumber = -1;
+private:
+    // Objects internal vars
+    QMap<Colors::Color, QMap<quint8, Object>*> _playerObjects;
+    Object _ballObject;
 
-        void updateBlueTeam(SSL_DetectionFrame* detectData);
-        void updateYellowTeam(SSL_DetectionFrame* detectData);
-        void deleteOldPlayers(QList<quint8>* recentPlayers, Colors::Color teamNum);
+    // Player internal pointers
+    QMap<quint8, Player*> _playerPointers;
 
-    public:
-        void addTeam(uint8 teamNum, const QString& teamName);
-        void delTeam(uint8 teamNum);
-        QList<uint8> teams() const;
-        const QString teamName(uint8 teamNum) const;
-        uint8 teamNumber(const QString& name) const;
+    // Constants
+    Constants *_constants;
+    Constants* getConstants();
 
-        void addBall(uint8 ballNum);
-        void delBall(uint8 ballNum);
-        QList<uint8> balls() const;
-        const Position ballPosition(uint8 ballNum) const;
-        const Velocity ballVelocity(uint8 ballNum) const;
-        void setBallPosition(uint8 ballNum, const Position& position);
-        void setBallVelocity(uint8 ballNum, const Velocity& velocity);
+    // Field locations
+    Locations *_locations;
 
-        void addPlayer(uint8 teamNum, uint8 playerNum);
-        void delPlayer(uint8 teamNum, uint8 playerNum);
+    // Mutexes for read/write control management
+    QReadWriteLock _playerMutex;
+    QReadWriteLock _ballMutex;
 
-        QList<uint8> players(uint8 teamNum) const;
-        const Position&     playerPosition(uint8 teamNum, uint8 playerNum)     const;
-        const Angle&        playerOrientation(uint8 teamNum, uint8 playerNum)  const;
-        const Velocity&     playerVelocity(uint8 teamNum, uint8 playerNum)     const;
-        const AngularSpeed& playerAngularSpeed(uint8 teamNum, uint8 playerNum) const;
-
-        bool                ballPossession(uint8 teamNum, uint8 playerNum)     const;
-        bool                kickEnabled(uint8 teamNum, uint8 playerNum)        const;
-        bool                dribbleEnabled(uint8 teamNum, uint8 playerNum)     const;
-
-        unsigned char       batteryCharge(uint8 teamNum, uint8 playerNum)      const;
-        unsigned char       capacitorCharge(uint8 teamNum, uint8 playerNum)    const;
-
-        void setPlayerPosition(uint8 teamNum, uint8 playerNum, const Position& position);
-        void setPlayerOrientation(uint8 teamNum, uint8 playerNum, const Angle& orientation);
-        void setPlayerVelocity(uint8 teamNum, uint8 playerNum, const Velocity& velocity);
-        void setPlayerAngularSpeed(uint8 teamNum, uint8 playerNum, const AngularSpeed& angularSpeed);
-        void setBallPossession(uint8 teamNum, uint8 playerNum, bool possession);
-        void setKickEnabled(uint8 teamNum, uint8 playerNum, bool status);
-        void setDribbleEnabled(uint8 teamNum, uint8 playerNum, bool status);
-        void setBatteryCharge(uint8 teamNum, uint8 playerNum, unsigned char charge);
-        void setCapacitorCharge(uint8 teamNum, uint8 playerNum, unsigned char charge);
+public slots:
+    void updatePlayer(Colors::Color teamColor, quint8 playerId, Object playerObject);
+    void updateBall(Object ballObject);
+    void updateGeometry(SSL_GeometryData geometryData);
 };
 
 #endif // WORLDMAP_H

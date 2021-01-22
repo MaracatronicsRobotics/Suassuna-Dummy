@@ -21,11 +21,17 @@
 
 #include "entity.h"
 
+#include <src/utils/text/text.h>
+
+int Entity::_id = 0;
+
 Entity::Entity(EntityType type) {
     _entityType = type;
+    _id++;               // global id +1
     _entityPriority = 0; // default priority is 0
     _loopFrequency = 60; // default loop frequency is 60
     _isEnabled = true;   // enabling by default
+    _loopEnabled = true; // enabling loop by default
 }
 
 void Entity::run(){
@@ -33,7 +39,7 @@ void Entity::run(){
 
     while(isEnabled()) {
         startTimer();
-        if(isEnabled()) {
+        if(isLoopEnabled()) {
             loop();
         }
         stopTimer();
@@ -45,6 +51,10 @@ void Entity::run(){
     }
 
     finalization();
+}
+
+int Entity::entityId() {
+    return _id;
 }
 
 void Entity::setLoopFrequency(int hz) {
@@ -62,6 +72,12 @@ void Entity::setPriority(int priority) {
 void Entity::enableEntity() {
     _mutexEnabled.lock();
     _isEnabled = true;
+    _mutexEnabled.unlock();
+}
+
+void Entity::disableLoop() {
+    _mutexEnabled.lock();
+    _loopEnabled = false;
     _mutexEnabled.unlock();
 }
 
@@ -93,6 +109,14 @@ bool Entity::isEnabled() {
     _mutexEnabled.unlock();
 
     return isEnabled;
+}
+
+bool Entity::isLoopEnabled() {
+    _mutexEnabled.lock();
+    bool loopEnabled = _loopEnabled;
+    _mutexEnabled.unlock();
+
+    return loopEnabled;
 }
 
 EntityType Entity::entityType() {

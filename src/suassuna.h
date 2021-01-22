@@ -24,6 +24,7 @@
 
 #include <src/entities/vision/vision.h>
 #include <src/entities/world/world.h>
+#include <src/entities/coach/coach.h>
 #include <src/entities/actuator/simulator/simactuator.h>
 #include <src/entities/world/worldmap.h>
 #include <src/constants/constants.h>
@@ -48,6 +49,9 @@ private:
 
     // World
     World *_world;
+
+    // Coach
+    Coach *_coach;
 
     // World Map
     WorldMap *_worldMap;

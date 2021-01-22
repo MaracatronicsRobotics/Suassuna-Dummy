@@ -32,24 +32,31 @@ World::~World() {
 }
 
 void World::addEntity(Entity *e, int priority) {
-    // Insert entity in hash
-    _moduleEntities.insert(priority, e);
+    // Check if priority is already created
+    QHash<int, Entity*> *prioEntities;
+    if(!_moduleEntities.keys().contains(priority)) {
+         prioEntities = new QHash<int, Entity*>();
+        _moduleEntities.insert(priority, prioEntities);
+    }
+
+    prioEntities = _moduleEntities.value(priority);
+    prioEntities->insert(e->entityId(), e);
 
     // Set entity priority
     e->setPriority(priority);
 }
 
 void World::initialization() {
-    std::cout << Text::cyan("[WORLD] ", true) << Text::bold("Initializing modules.") << '\n';
+    std::cout << Text::cyan("[WORLD] ", true) + Text::bold("Initializing modules.") + '\n';
     startEntities();
 }
 
 void World::loop() {
-    // TODO
+    // World is currently disabled, so loop() doesn't run (change if needed!)
 }
 
 void World::finalization() {
-    std::cout << Text::cyan("[WORLD] ", true) << Text::bold("Finishing modules.") << '\n';
+    std::cout << Text::cyan("[WORLD] ", true) + Text::bold("Finishing modules.") + '\n';
     stopAndDeleteEntities();
 }
 
@@ -63,7 +70,7 @@ void World::startEntities() {
         const int priority = priorities.at(i);
 
         // Get associated entities
-        const QList<Entity*> entities = _moduleEntities.values(priority);
+        const QList<Entity*> entities = _moduleEntities.value(priority)->values();
 
         // Start those entities
         QList<Entity*>::const_iterator it;
@@ -90,7 +97,7 @@ void World::stopAndDeleteEntities() {
         const int priority = priorities.at(i);
 
         // Get associated entities
-        const QList<Entity*> entities = _moduleEntities.values(priority);
+        const QList<Entity*> entities = _moduleEntities.value(priority)->values();
 
         // Stop those entities
         QList<Entity*>::const_iterator it;
@@ -111,7 +118,7 @@ void World::stopAndDeleteEntities() {
             Entity *entity = *it;
 
             // Remove entity from hash
-            _moduleEntities.values(priority).removeOne(entity);
+            _moduleEntities.value(priority)->remove(entity->entityId());
 
             // Delete entity
             delete entity;
@@ -121,7 +128,7 @@ void World::stopAndDeleteEntities() {
 
 Constants* World::getConstants() {
     if(_constants == nullptr) {
-        std::cout << Text::red("[ERROR] ", true) << Text::bold("Constants with nullptr value at World") << '\n';
+        std::cout << Text::red("[ERROR] ", true) << Text::bold("Constants with nullptr value at World") + '\n';
     }
     else {
         return _constants;
