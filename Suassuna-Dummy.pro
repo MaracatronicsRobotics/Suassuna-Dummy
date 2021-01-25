@@ -9,7 +9,7 @@ QT += core    \
 TEMPLATE = app
 DESTDIR  = ../bin
 TARGET   = Armorial-Suassuna
-VERSION  = 0.0.1
+VERSION  = 1.0.0
 
 CONFIG += c++14 console
 CONFIG -= app_bundle
@@ -35,59 +35,59 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 # Project source files
 SOURCES += \
-        include/grSim_Commands.pb.cc \
-        include/grSim_Packet.pb.cc \
-        include/grSim_Replacement.pb.cc \
-        include/messages_robocup_ssl_detection.pb.cc \
-        include/messages_robocup_ssl_geometry.pb.cc \
-        include/messages_robocup_ssl_refbox_log.pb.cc \
-        include/messages_robocup_ssl_robot_status.pb.cc \
-        include/messages_robocup_ssl_wrapper.pb.cc \
-        include/referee.pb.cc \
-        include/ssl_game_controller_auto_ref.pb.cc \
-        include/ssl_game_controller_common.pb.cc \
-        include/ssl_game_controller_team.pb.cc \
-        include/ssl_game_event.pb.cc \
-        include/ssl_game_event_2019.pb.cc \
-        include/ssl_referee.pb.cc \
-        main.cpp \
-        src/constants/constants.cpp \
-        src/entities/actuator/actuator.cpp \
-        src/entities/actuator/simulator/simactuator.cpp \
-        src/entities/coach/behavior/behavior.cpp \
+    include/grSim_Commands.pb.cc \
+    include/grSim_Packet.pb.cc \
+    include/grSim_Replacement.pb.cc \
+    include/messages_robocup_ssl_detection.pb.cc \
+    include/messages_robocup_ssl_geometry.pb.cc \
+    include/messages_robocup_ssl_refbox_log.pb.cc \
+    include/messages_robocup_ssl_robot_status.pb.cc \
+    include/messages_robocup_ssl_wrapper.pb.cc \
+    include/referee.pb.cc \
+    include/ssl_game_controller_auto_ref.pb.cc \
+    include/ssl_game_controller_common.pb.cc \
+    include/ssl_game_controller_team.pb.cc \
+    include/ssl_game_event.pb.cc \
+    include/ssl_game_event_2019.pb.cc \
+    include/ssl_referee.pb.cc \
+    main.cpp \
+    src/constants/constants.cpp \
+    src/entities/actuator/actuator.cpp \
+    src/entities/actuator/simulator/simactuator.cpp \
+    src/entities/coach/behavior/behavior.cpp \
     src/entities/coach/behavior/gotolookto/behavior_gotolookto.cpp \
-        src/entities/coach/coach.cpp \
+    src/entities/coach/coach.cpp \
     src/entities/coach/coordinator/coordinator.cpp \
     src/entities/coach/coordinator/ssl/coordinator_ssl.cpp \
     src/entities/coach/playbook/default/playbook_default.cpp \
     src/entities/coach/playbook/default/playbook_default2.cpp \
-        src/entities/coach/playbook/playbook.cpp \
-        src/entities/coach/player/player.cpp \
+    src/entities/coach/playbook/playbook.cpp \
+    src/entities/coach/player/player.cpp \
     src/entities/coach/role/default/role_default.cpp \
-        src/entities/coach/role/role.cpp \
-        src/entities/coach/skill/goto/skill_goto.cpp \
-        src/entities/coach/skill/rotateto/skill_rotateto.cpp \
-        src/entities/coach/skill/skill.cpp \
-        src/entities/entity.cpp \
-        src/entities/vision/filters/kalman/kalmanfilter.cpp \
-        src/entities/vision/filters/kalman/matrix/matrix.cpp \
-        src/entities/vision/filters/kalman/state/kalmanstate.cpp \
-        src/entities/vision/filters/loss/lossfilter.cpp \
-        src/entities/vision/filters/noise/noisefilter.cpp \
-        src/entities/vision/vision.cpp \
+    src/entities/coach/role/role.cpp \
+    src/entities/coach/skill/goto/skill_goto.cpp \
+    src/entities/coach/skill/rotateto/skill_rotateto.cpp \
+    src/entities/coach/skill/skill.cpp \
+    src/entities/entity.cpp \
+    src/entities/vision/filters/kalman/kalmanfilter.cpp \
+    src/entities/vision/filters/kalman/matrix/matrix.cpp \
+    src/entities/vision/filters/kalman/state/kalmanstate.cpp \
+    src/entities/vision/filters/loss/lossfilter.cpp \
+    src/entities/vision/filters/noise/noisefilter.cpp \
+    src/entities/vision/vision.cpp \
     src/entities/world/locations/locations.cpp \
-        src/entities/world/world.cpp \
-        src/entities/world/worldmap.cpp \
-        src/exithandler.cpp \
-        src/suassuna.cpp \
-        src/utils/text/text.cpp \
-        src/utils/timer/timer.cpp \
+    src/entities/world/world.cpp \
+    src/entities/world/worldmap.cpp \
+    src/exithandler.cpp \
+    src/suassuna.cpp \
+    src/utils/text/text.cpp \
+    src/utils/timer/timer.cpp \
     src/utils/types/angle/angle.cpp \
     src/utils/types/angularspeed/angularspeed.cpp \
     src/utils/types/field/field.cpp \
     src/utils/types/field/ssl/field_sslb.cpp \
     src/utils/types/fieldside/fieldside.cpp \
-        src/utils/types/object/object.cpp \
+    src/utils/types/object/object.cpp \
     src/utils/types/position/position.cpp \
     src/utils/types/velocity/velocity.cpp
 
