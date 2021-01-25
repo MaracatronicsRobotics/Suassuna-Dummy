@@ -19,36 +19,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#include "role_default.h"
 
-Role_Default::Role_Default() {
-    done = false;
-}
+#ifndef PLAYBOOK_DEFAULT2_H
+#define PLAYBOOK_DEFAULT2_H
 
-QString Role_Default::name() {
-    return "Role_Default";
-}
+#include <src/entities/coach/playbook/playbook.h>
+#include <src/entities/coach/role/roles.h>
 
-void Role_Default::setPositionToGo(Position &positionToGo) {
-    _positionToGo = positionToGo;
-}
+class Playbook_Default2 : public Playbook
+{
+public:
+    Playbook_Default2();
+    QString name();
 
-void Role_Default::setPositionToLook(Position &positionToLook) {
-    _positionToLook = positionToLook;
-}
+private:
+    // Playbook inherited methods
+    void configure(int numPlayers);
+    void run(int numPlayers);
 
-void Role_Default::configure() {
-    // Starting behaviors
-    _behavior_goToLookTo = new Behavior_GoToLookTo();
+    // Role pointer vector
+    QList<Role_Default*> _roles_default;
+};
 
-    // Adding behaviors to behaviors list
-    addBehavior(BEHAVIOR_GOTOLOOKTO, _behavior_goToLookTo);
-}
-
-void Role_Default::run() {
-    _behavior_goToLookTo->setPositionToGo(_positionToGo);
-    _behavior_goToLookTo->setPositionToLook(_positionToLook);
-
-    setBehavior(BEHAVIOR_GOTOLOOKTO);
-}
-
+#endif // PLAYBOOK_DEFAULT2_H

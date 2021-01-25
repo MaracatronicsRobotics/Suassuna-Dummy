@@ -23,5 +23,6 @@
 #define PLAYBOOKS_H
 
 #include <src/entities/coach/playbook/default/playbook_default.h>
+#include <src/entities/coach/playbook/default/playbook_default2.h>
 
 #endif // PLAYBOOKS_H

@@ -19,17 +19,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#include "playbook_default.h"
+#include "playbook_default2.h"
 
-Playbook_Default::Playbook_Default() {
+Playbook_Default2::Playbook_Default2() {
 
 }
 
-QString Playbook_Default::name() {
-    return "Playbook_Default";
+QString Playbook_Default2::name() {
+    return "Playbook_Default2";
 }
 
-void Playbook_Default::configure(int numPlayers) {
+void Playbook_Default2::configure(int numPlayers) {
     // Cleaning vector (roles pointers are already stored to further delete when configure is called)
     _roles_default.clear();
 
@@ -40,14 +40,14 @@ void Playbook_Default::configure(int numPlayers) {
     }
 }
 
-void Playbook_Default::run(int numPlayers) {
+void Playbook_Default2::run(int numPlayers) {
     // Get players ids list
     QList<quint8> players = getPlayers();
 
     // For each player, set its associated role
     for(int i = 0; i < numPlayers; i++) {
-        // Take locations of opposite penalty mark
-        Position goToPosition = getWorldMap()->getLocations()->theirPenaltyMark();
+        // Take locations of our penalty mark
+        Position goToPosition = getWorldMap()->getLocations()->ourPenaltyMark();
         goToPosition = Position(true, goToPosition.x(), -1.0 + (i * (2.0 / numPlayers)));
         Position lookToPosition = getWorldMap()->getLocations()->fieldCenter();
 

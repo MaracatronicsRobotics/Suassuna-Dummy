@@ -22,9 +22,13 @@ private:
 
     // Playbook pointers
     Playbook_Default *_playbook_default;
-    Playbook_Default *_playbook_default2;
+    Playbook_Default2 *_playbook_default2;
 
-    int x;
+    // Timer
+    Timer timer;
+
+    // Management
+    int actualState;
 };
 
 #endif // COORDINATOR_SSL_H
