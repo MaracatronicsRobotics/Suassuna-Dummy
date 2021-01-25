@@ -151,6 +151,11 @@ void Coordinator::runCoordinator() {
     // Call run virtual method (will choose what playbook to use)
     run();
 
+    // Check if actual playbook is initialized
+    if(!_actualPlaybook->isInitialized()) {
+        _actualPlaybook->initialize(getConstants(), getWorldMap());
+    }
+
     // Check if qt players changed
     if(availablePlayers.size() != _actualQtPlayers) {
         // Update actualQtPlayers
