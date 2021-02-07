@@ -8,8 +8,8 @@ QT += core    \
 # Project configs
 TEMPLATE = app
 DESTDIR  = ../bin
-TARGET   = Armorial-Suassuna
-VERSION  = 1.0.0
+TARGET   = Suassuna-Dummy
+VERSION  = 1.0.1
 
 CONFIG += c++14 console
 CONFIG -= app_bundle
