@@ -21,10 +21,11 @@
 
 #include "suassuna.h"
 
-#include <src/entities/coach/player/player.h>
-#include <src/entities/coach/role/default/role_default.h>
 #include <src/utils/types/field/ssl/field_sslb.h>
+#include <src/entities/coach/player/player.h>
 #include <src/entities/coach/coordinator/ssl/coordinator_ssl.h>
+#include <src/entities/coach/role/default/role_default.h>
+#include <src/entities/actuator/simulator/simactuator.h>
 
 Suassuna::Suassuna(Constants *constants) {
     // Setting up constants
@@ -50,21 +51,17 @@ void Suassuna::start() {
     QObject::connect(_vision, SIGNAL(sendGeometryData(SSL_GeometryData)), _worldMap, SLOT(updateGeometry(SSL_GeometryData)), Qt::DirectConnection);
 
     // Creating and adding actuator to world
-    _simActuator = new SimActuator(getConstants());
-    _world->addEntity(_simActuator, 1); // needs to be an higher priority than the last player priority
+    _actuator = new SimActuator(getConstants());
+    _world->addEntity(_actuator, 1); // needs to be an higher priority than the last player priority
 
     // Adding players
     for(int i = 0; i < getConstants()->qtPlayers(); i++) {
         Player *player = new Player(i, getConstants(), _worldMap);
-        QObject::connect(player, SIGNAL(setLinearSpeed(int, int, float, float)), _simActuator, SLOT(setLinearSpeed(int, int, float, float)));
-        QObject::connect(player, SIGNAL(setAngularSpeed(int, int, float)), _simActuator, SLOT(setAngularSpeed(int, int, float)));
-        QObject::connect(player, SIGNAL(dribble(int, int, bool)), _simActuator, SLOT(dribble(int, int, bool)));
-        QObject::connect(player, SIGNAL(kick(int, int, float)), _simActuator, SLOT(kick(int, int, float)));
-        QObject::connect(player, SIGNAL(chipKick(int, int, float)), _simActuator, SLOT(chipKick(int, int, float)));
-
-        /// TODO: remove this (testing)
-        Role_Default *rl = new Role_Default();
-        player->setRole(rl);
+        QObject::connect(player, SIGNAL(setLinearSpeed(int, int, float, float)), _actuator, SLOT(setLinearSpeed(int, int, float, float)));
+        QObject::connect(player, SIGNAL(setAngularSpeed(int, int, float)), _actuator, SLOT(setAngularSpeed(int, int, float)));
+        QObject::connect(player, SIGNAL(dribble(int, int, bool)), _actuator, SLOT(dribble(int, int, bool)));
+        QObject::connect(player, SIGNAL(kick(int, int, float)), _actuator, SLOT(kick(int, int, float)));
+        QObject::connect(player, SIGNAL(chipKick(int, int, float)), _actuator, SLOT(chipKick(int, int, float)));
 
         _worldMap->addPlayer(i, player);
         _world->addEntity(player, 2);

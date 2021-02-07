@@ -26,7 +26,6 @@
 #include <src/entities/entity.h>
 
 #define QT_TEAMS 2
-#define QT_PLAYERS 11
 
 class Actuator : public Entity
 {
@@ -38,8 +37,8 @@ public:
 protected:
     // Internal
     typedef struct {
-        int isYellow;
-        int playerId;
+        bool isYellow;
+        quint8 playerId;
         float vx, vy, vw;
         float kickPowerX, kickPowerZ;
         bool dribbling;
@@ -47,6 +46,8 @@ protected:
     } robotData;
     robotData **_robotData;
     QReadWriteLock _dataMutex;
+
+    void initializeData(int qtPlayers);
 
 private:
     // Entity inherited methods

@@ -23,6 +23,7 @@
 #define VISION_H
 
 #include <QUdpSocket>
+#include <QNetworkDatagram>
 
 #include <src/entities/entity.h>
 #include <src/constants/constants.h>

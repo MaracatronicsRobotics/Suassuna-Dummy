@@ -84,12 +84,18 @@ void Vision::loop() {
     while(_visionClient->hasPendingDatagrams()) {
         // Creating auxiliary vars
         SSL_WrapperPacket wrapperData;
-        char *buffer = new char[65535];
-        long long int packetLength = 0;
+        QNetworkDatagram datagram;
 
-        // Reading upcoming packet and parsing it to protobuf
-        packetLength = _visionClient->readDatagram(buffer, 65535);
-        if(wrapperData.ParseFromArray(buffer, int(packetLength)) == false) {
+        // Receiving datagram
+        datagram = _visionClient->receiveDatagram();
+
+        // Check if it is valid
+        if(!datagram.isValid()) {
+            continue;
+        }
+
+        // Parse to protobuf
+        if(wrapperData.ParseFromArray(datagram.data().data(), datagram.data().size()) == false) {
             std::cout << Text::cyan("[VISION] ", true) << Text::red("Wrapper packet parsing error.", true) + '\n';
             continue;
         }
@@ -184,8 +190,6 @@ void Vision::loop() {
             SSL_GeometryData geomData = wrapperData.geometry();
             emit sendGeometryData(geomData);
         }
-
-        delete[] buffer;
     }
 }
 

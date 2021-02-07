@@ -31,6 +31,9 @@ SimActuator::SimActuator(Constants *constants) {
     // Setting network data from constants
     _actuatorAddress = getConstants()->simActuatorAddress();
     _actuatorPort = getConstants()->simActuatorPort();
+
+    // Initializing data
+    initializeData(getConstants()->qtPlayers());
 }
 
 void SimActuator::initialization() {
@@ -40,7 +43,7 @@ void SimActuator::initialization() {
 
 void SimActuator::loop() {
     for(int i = 0; i < QT_TEAMS; i++) {
-        for(int j = 0; j < QT_PLAYERS; j++) {
+        for(int j = 0; j < getConstants()->qtPlayers(); j++) {
             _dataMutex.lockForRead();
             if(!_robotData[i][j].isUpdated) {
                 sendData(_robotData[i][j]);
