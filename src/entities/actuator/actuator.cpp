@@ -22,7 +22,6 @@
 #include "actuator.h"
 
 Actuator::Actuator() : Entity(ENT_ACTUATOR) {
-
 }
 
 void Actuator::initializeData(int qtPlayers) {
