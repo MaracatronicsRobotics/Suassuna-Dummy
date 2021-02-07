@@ -22,12 +22,12 @@
 #ifndef SUASSUNA_H
 #define SUASSUNA_H
 
-#include <src/entities/vision/vision.h>
+#include <src/constants/constants.h>
 #include <src/entities/world/world.h>
 #include <src/entities/coach/coach.h>
-#include <src/entities/actuator/simulator/simactuator.h>
+#include <src/entities/vision/vision.h>
 #include <src/entities/world/worldmap.h>
-#include <src/constants/constants.h>
+#include <src/entities/actuator/actuator.h>
 
 class Suassuna
 {
@@ -45,7 +45,7 @@ private:
 
     // Modules
     Vision *_vision;
-    SimActuator *_simActuator;
+    Actuator *_actuator;
 
     // World
     World *_world;

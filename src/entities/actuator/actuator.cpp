@@ -22,13 +22,17 @@
 #include "actuator.h"
 
 Actuator::Actuator() : Entity(ENT_ACTUATOR) {
+
+}
+
+void Actuator::initializeData(int qtPlayers) {
     _robotData = (robotData **) malloc(QT_TEAMS * sizeof(robotData *));
     for(int i = 0; i < QT_TEAMS; i++) {
-        _robotData[i] = (robotData *) malloc(QT_PLAYERS * sizeof(robotData));
+        _robotData[i] = (robotData *) malloc(qtPlayers * sizeof(robotData));
     }
 
     for(int i = 0; i < QT_TEAMS; i++) {
-        for(int j = 0; j < QT_PLAYERS; j++) {
+        for(int j = 0; j < qtPlayers; j++) {
             _robotData[i][j].isYellow = (i == 0) ? true : false;
             _robotData[i][j].playerId = j;
             _robotData[i][j].vx = 0.0f;
