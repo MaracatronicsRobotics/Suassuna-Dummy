@@ -82,7 +82,7 @@ void KalmanFilter::iterate(const Position &pos) {
 
     // Get iteration time
     _timer.stop();
-    const float T = _timer.getMiliSeconds();
+    const float T = _timer.getSeconds();
     _timer.start();
 
     // Initial states
@@ -122,7 +122,7 @@ void KalmanFilter::predict() {
 
     // Get iteration time
     _timer.stop();
-    const float T = _timer.getMiliSeconds()*1E-3;
+    const float T = _timer.getSeconds();
     _timer.start();
 
     // Check initial states, if do not have, quit. cannot make prevision...

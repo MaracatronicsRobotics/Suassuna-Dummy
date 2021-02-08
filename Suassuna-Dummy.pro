@@ -9,7 +9,7 @@ QT += core    \
 TEMPLATE = app
 DESTDIR  = ../bin
 TARGET   = Suassuna-Dummy
-VERSION  = 1.0.1
+VERSION  = 1.0.2
 
 CONFIG += c++14 console
 CONFIG -= app_bundle
