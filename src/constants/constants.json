@@ -1,0 +1,23 @@
+{
+	"Network": {
+		"Referee": {
+			"refereeNetworkAddress": "224.5.23.2",
+			"refereeNetworkPort": 10003,
+			"refereeNetworkInterface": "enp3s0"
+		},
+		"WorldMap": {
+			"visionServiceAddress": "127.0.0.1",
+			"visionServicePort": 50053
+		},
+		"Controller": {
+			"actuatorServiceAddress": "127.0.0.1",
+			"actuatorServicePort": 50051
+		}
+	},
+	
+	"Team": {
+		"teamColor": "yellow",
+		"teamPlaySide": "left",
+		"maxNumPlayers": 3
+	}
+}
