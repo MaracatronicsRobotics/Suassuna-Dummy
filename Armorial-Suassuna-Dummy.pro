@@ -36,10 +36,12 @@ DEFINES += PROJECT_PATH=\\\"$${PWD}\\\"
 
 SOURCES += \
     main.cpp \
-    src/gui/gui.cpp
+    src/gui/gui.cpp \
+    src/suassuna.cpp
 
 HEADERS += \
-    src/gui/gui.h
+    src/gui/gui.h \
+    src/suassuna.h
 
 FORMS += \
     src/gui/gui.ui
