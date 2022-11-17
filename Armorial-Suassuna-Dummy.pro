@@ -36,10 +36,18 @@ DEFINES += PROJECT_PATH=\\\"$${PWD}\\\"
 
 SOURCES += \
     main.cpp \
+    src/entities/controller/controller.cpp \
+    src/entities/player/player.cpp \
+    src/entities/referee/referee.cpp \
+    src/entities/worldmap/worldmap.cpp \
     src/gui/gui.cpp \
     src/suassuna.cpp
 
 HEADERS += \
+    src/entities/controller/controller.h \
+    src/entities/player/player.h \
+    src/entities/referee/referee.h \
+    src/entities/worldmap/worldmap.h \
     src/gui/gui.h \
     src/suassuna.h
 
