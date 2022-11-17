@@ -21,6 +21,8 @@
 
 #include "referee.h"
 
+using namespace Suassuna;
+
 Referee::Referee()
 {
 
