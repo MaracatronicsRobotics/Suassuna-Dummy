@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package Armorial;
+
+message HealthCheckRequest {
+	string service = 1;
+}
+
+message HealthCheckResponse {
+	enum ServingStatus {
+		UNKNOWN = 0;
+		SERVING = 1;
+		NOT_SERVING = 2;
+		SERVICE_UNKNOWN = 3;  // Used only by the Watch method.
+	}
+	ServingStatus status = 1;
+}
+
+message Robot {
+	RobotIdentifier robotIdentifier = 1;
+	Position robotPosition          = 2;
+	Angle robotOrientation          = 3;
+	Velocity robotVelocity          = 4;
+	Acceleration robotAcceleration  = 5;
+	AngularSpeed robotAngularSpeed  = 6;
+	RobotStatus robotStatus         = 7;
+}
+
+message Ball {
+	Position ballPosition         = 1;
+	Velocity ballVelocity         = 2;
+	Acceleration ballAcceleration = 3;
+}
+
+message ControlPacket {
+	RobotIdentifier robotIdentifier = 1;
+	Velocity robotVelocity          = 2;
+	AngularSpeed robotAngularSpeed  = 3;
+	KickSpeed robotKick             = 4;
+	bool dribbling                  = 5;
+	float w1                        = 6;
+	float w2                        = 7;
+	float w3                        = 8;
+	float w4                        = 9;
+}
+
+message Field {
+	float fieldLength                    = 1;
+	float fieldWidth                     = 2;
+	float goalWidth                      = 3;
+	float goalDepth                      = 4;
+	float defenseWidth                   = 5;
+	float defenseLength                  = 6;
+	float boundaryWidth                  = 7;
+	float centerRadius                   = 8;
+	repeated FieldLineSegment fieldLines = 9;
+	repeated FieldCircularArc fieldArcs  = 10;
+}
+
+message FieldLineSegment {
+	Position p1     = 1;
+	Position p2     = 2;
+	float thickness = 3;
+}
+
+message FieldCircularArc {
+	Position center = 1;
+	float a1        = 2;
+	float a2        = 3;
+	float thickness = 4;
+}
+
+message RobotIdentifier {
+	uint32 robotId   = 1;
+	Color robotColor = 2;
+}
+
+message RobotStatus {
+	RobotIdentifier robotIdentifier = 1;
+	float batteryCharge             = 2;
+	float capacitorCharge           = 3;
+	bool isDribbling                = 4;
+	bool infraRed                   = 5; 
+	bool kickOnTouch                = 6;
+}
+
+message Color {
+	bool isBlue = 1;
+}
+
+message Position {
+	float x        = 1;
+	float y        = 2;
+	float z        = 3;
+	bool isInvalid = 4;
+}
+
+message Angle {
+	float value      = 1;
+	bool isInDegrees = 2;
+	bool isInvalid   = 3;
+}
+
+message Velocity {
+	float vx       = 1;
+	float vy       = 2;
+	float vz       = 3;
+	bool isInvalid = 4;
+}
+
+message KickSpeed {
+	float kickSpeed = 1;
+	float chipAngle = 2;
+	float kickAngle = 3;
+}
+
+message Acceleration {
+	float ax       = 1;
+	float ay       = 2;
+	float az       = 3;
+	bool isInvalid = 4;
+}
+
+message AngularSpeed {
+	float vw         = 1;
+	bool isInDegrees = 2;
+	bool isInvalid   = 3;
+}

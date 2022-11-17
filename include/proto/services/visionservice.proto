@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "messages.proto";
+import "google/protobuf/empty.proto";
+
+package Armorial.Vision;
+
+service VisionService {
+	rpc SetRobots(stream Robot) returns (google.protobuf.Empty) {}
+	rpc SetBall(Ball) returns (google.protobuf.Empty) {}
+	rpc SetField(Field) returns (google.protobuf.Empty) {}
+	rpc GetRobots(Color) returns (stream Robot);
+	rpc GetBall(google.protobuf.Empty) returns (Ball);
+	rpc GetField(google.protobuf.Empty) returns (Field); 
+	rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
+	rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
+}

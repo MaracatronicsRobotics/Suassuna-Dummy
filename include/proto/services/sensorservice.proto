@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "messages.proto";
+import "google/protobuf/empty.proto";
+
+package Armorial.Sensor;
+
+service SensorService {
+	rpc SetRobotsStatus(stream RobotStatus) returns (google.protobuf.Empty);
+	rpc GetRobotsStatus(google.protobuf.Empty) returns (stream RobotStatus);
+	rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
+	rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
+}

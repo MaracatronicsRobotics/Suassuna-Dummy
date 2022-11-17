@@ -1,0 +1,26 @@
+name: Build
+on:
+  push:
+  pull_request:
+jobs:
+  build-linux:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04 ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: "Install dependencies"
+        run: sudo apt-get update && sudo apt-get install build-essential cmake qt5-default libprotobuf-dev protobuf-compiler libprotoc-dev protobuf-compiler-grpc libgrpc++-dev libgrpc-dev libgtest-dev libspdlog-dev libfmt-dev && sudo apt-get upgrade
+      - name: "Compile services grpc packets"
+        run: cd services && protoc --grpc_out=../ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` *.proto && cd ..
+      - name: "Compile services proto packets"
+        run: cd services && protoc --cpp_out=../ *.proto && cd ..
+      - name: "Compile sslvision proto packets"
+        run: cd sslvision && protoc --cpp_out=../ *.proto && cd ..
+      - name: "Compile simulation proto packets"
+        run: cd simulation && protoc --cpp_out=../ *.proto && cd ..
+      - name: "Compile referee proto packets"
+        run: cd referee && protoc --cpp_out=../ *.proto && cd ..
