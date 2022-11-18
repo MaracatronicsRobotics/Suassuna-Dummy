@@ -22,11 +22,57 @@
 #ifndef WORLDMAP_H
 #define WORLDMAP_H
 
+#include <QReadWriteLock>
 
-class WorldMap
+#include <Armorial/Base/Client/Client.h>
+#include <Armorial/Common/Enums/Color/Color.h>
+#include <Armorial/Common/Types/Field/Field.h>
+#include <Armorial/Threaded/Entity/Entity.h>
+
+#include <include/proto/visionservice.grpc.pb.h>
+
+#include <src/entities/coach/team/team.h>
+
+class WorldMap : public Threaded::Entity, public Base::GRPC::Client<Armorial::Vision::VisionService>
 {
 public:
-    WorldMap();
+    /*!
+     * \brief Constructor for the WorldMap class.
+     * \param serviceAddress, servicePort The given parameters for the connection with the Vision Service.
+     */
+    WorldMap(QString serviceAddress, quint16 servicePort);
+
+    /*!
+     * \brief Setup the internal pointers for the teams. This method is called via the Suassuna core interface.
+     * \param teams The given teams.
+     */
+    void setupTeams(QMap<Common::Enums::Color, Team*>& teams);
+
+    // Getters for internal objects
+    Common::Types::Field getField();
+    Common::Types::Object getBall();
+    // Common::Types::Object getPlayer(const Common::Enums::Color& teamColor, quint8 playerId);
+    // QList<Common::Types::Object> getPlayersFromTeam(const Common::Enums::Color &teamColor);
+
+protected:
+    // Updaters for internal objects
+    void updateField();
+    void updateBall();
+    void updatePlayers();
+
+private:
+    // Entity inherited methods
+    void initialization();
+    void loop();
+    void finalization();
+
+    // Internal objects
+    QMap<Common::Enums::Color, Team*> _teams;
+    Common::Types::Field _field;
+    Common::Types::Object _ball;
+
+    // Internal mutex for object management
+    QReadWriteLock _mutex;
 };
 
 #endif // WORLDMAP_H

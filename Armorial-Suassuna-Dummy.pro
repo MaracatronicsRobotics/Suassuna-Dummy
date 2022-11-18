@@ -35,18 +35,80 @@ DEFINES += PROJECT_PATH=\\\"$${PWD}\\\"
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    include/proto/actuatorservice.grpc.pb.cc \
+    include/proto/actuatorservice.pb.cc \
+    include/proto/messages.grpc.pb.cc \
+    include/proto/messages.pb.cc \
+    include/proto/sensorservice.grpc.pb.cc \
+    include/proto/sensorservice.pb.cc \
+    include/proto/ssl_gc_api.pb.cc \
+    include/proto/ssl_gc_change.pb.cc \
+    include/proto/ssl_gc_ci.pb.cc \
+    include/proto/ssl_gc_common.pb.cc \
+    include/proto/ssl_gc_engine.pb.cc \
+    include/proto/ssl_gc_engine_config.pb.cc \
+    include/proto/ssl_gc_game_event.pb.cc \
+    include/proto/ssl_gc_geometry.pb.cc \
+    include/proto/ssl_gc_rcon.pb.cc \
+    include/proto/ssl_gc_rcon_autoref.pb.cc \
+    include/proto/ssl_gc_rcon_remotecontrol.pb.cc \
+    include/proto/ssl_gc_rcon_team.pb.cc \
+    include/proto/ssl_gc_referee_message.pb.cc \
+    include/proto/ssl_gc_state.pb.cc \
+    include/proto/ssl_vision_detection.pb.cc \
+    include/proto/ssl_vision_detection_tracked.pb.cc \
+    include/proto/ssl_vision_geometry.pb.cc \
+    include/proto/ssl_vision_wrapper.pb.cc \
+    include/proto/ssl_vision_wrapper_tracked.pb.cc \
+    include/proto/visionservice.grpc.pb.cc \
+    include/proto/visionservice.pb.cc \
+    include/proto/vssref_command.pb.cc \
+    include/proto/vssref_common.pb.cc \
+    include/proto/vssref_placement.pb.cc \
     main.cpp \
+    src/constants/constants.cpp \
+    src/entities/coach/team/team.cpp \
     src/entities/controller/controller.cpp \
     src/entities/player/player.cpp \
-    src/entities/referee/referee.cpp \
     src/entities/worldmap/worldmap.cpp \
     src/gui/gui.cpp \
     src/suassuna.cpp
 
 HEADERS += \
+    include/proto/actuatorservice.grpc.pb.h \
+    include/proto/actuatorservice.pb.h \
+    include/proto/messages.grpc.pb.h \
+    include/proto/messages.pb.h \
+    include/proto/sensorservice.grpc.pb.h \
+    include/proto/sensorservice.pb.h \
+    include/proto/ssl_gc_api.pb.h \
+    include/proto/ssl_gc_change.pb.h \
+    include/proto/ssl_gc_ci.pb.h \
+    include/proto/ssl_gc_common.pb.h \
+    include/proto/ssl_gc_engine.pb.h \
+    include/proto/ssl_gc_engine_config.pb.h \
+    include/proto/ssl_gc_game_event.pb.h \
+    include/proto/ssl_gc_geometry.pb.h \
+    include/proto/ssl_gc_rcon.pb.h \
+    include/proto/ssl_gc_rcon_autoref.pb.h \
+    include/proto/ssl_gc_rcon_remotecontrol.pb.h \
+    include/proto/ssl_gc_rcon_team.pb.h \
+    include/proto/ssl_gc_referee_message.pb.h \
+    include/proto/ssl_gc_state.pb.h \
+    include/proto/ssl_vision_detection.pb.h \
+    include/proto/ssl_vision_detection_tracked.pb.h \
+    include/proto/ssl_vision_geometry.pb.h \
+    include/proto/ssl_vision_wrapper.pb.h \
+    include/proto/ssl_vision_wrapper_tracked.pb.h \
+    include/proto/visionservice.grpc.pb.h \
+    include/proto/visionservice.pb.h \
+    include/proto/vssref_command.pb.h \
+    include/proto/vssref_common.pb.h \
+    include/proto/vssref_placement.pb.h \
+    src/constants/constants.h \
+    src/entities/coach/team/team.h \
     src/entities/controller/controller.h \
     src/entities/player/player.h \
-    src/entities/referee/referee.h \
     src/entities/worldmap/worldmap.h \
     src/gui/gui.h \
     src/suassuna.h
