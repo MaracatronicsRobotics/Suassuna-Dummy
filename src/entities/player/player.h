@@ -22,11 +22,54 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <Armorial/Common/Types/Object/Object.h>
+#include <Armorial/Common/Enums/Color/Color.h>
+#include <Armorial/Threaded/Entity/Entity.h>
+#include <Armorial/Utils/Timer/Timer.h>
 
-class Player
+#include <src/entities/controller/controller.h>
+
+class Player : public Common::Types::Object, public Threaded::Entity
 {
 public:
-    Player();
+    Player(quint8 playerId, Controller* controller);
+
+    /*!
+     * \brief Player params getters
+     */
+    Common::Enums::Color teamColor();
+    quint8 playerId();
+
+    /*!
+     * \brief Mark player as idle, setting its speeds to zero.
+     */
+    void idle();
+
+protected:
+    friend class Team;
+
+    /*!
+     * \brief Update this Player class with a given Common::Types::Object containing
+     * the data.
+     * \param playerData The given data to update this Player instance.
+     */
+    void updatePlayer(Common::Types::Object playerData);
+
+private:
+    // Entity inherited methods
+    void initialization();
+    void loop();
+    void finalization();
+
+    // Internal objects
+    quint8 _playerId;
+
+    // Modules
+    Controller *_controller;
+
+    // Idle control
+    Utils::Timer _idleTimer;
+    bool _firstIt;
 };
 
 #endif // PLAYER_H

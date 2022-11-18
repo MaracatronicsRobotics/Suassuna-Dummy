@@ -21,7 +21,54 @@
 
 #include "player.h"
 
-Player::Player()
-{
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/bundled/color.h>
 
+#define MAX_TIME_TO_MARK_AS_IDLE 1.0 // 1 second
+
+Player::Player(quint8 playerId, Controller* controller) {
+    // Setup internal objects and modules
+    _playerId = playerId;
+    _controller = controller;
+
+    // Setup idle control
+    _firstIt = false;
+    _idleTimer.start();
+}
+
+quint8 Player::playerId() {
+    return _playerId;
+}
+
+void Player::updatePlayer(Common::Types::Object playerData) {
+    setPosition(playerData.getPosition());
+    setVelocity(playerData.getVelocity());
+    setAcceleration(playerData.getAcceleration());
+    setOrientation(playerData.getOrientation());
+    setAngularSpeed(playerData.getAngularSpeed());
+
+    _idleTimer.start();
+}
+
+void Player::idle() {
+    /// TODO: use controller to make player idle
+}
+
+void Player::initialization() {
+    spdlog::info("[{}] Thread started.", fmt::format(fmt::fg(teamColor() == Common::Enums::Color::BLUE ? fmt::terminal_color::blue : fmt::terminal_color::yellow) | fmt::emphasis::bold, entityName().toStdString() + " " + std::to_string(playerId())));
+}
+
+void Player::loop() {
+    // Check if player is idle (not received updated data from him for a long time)
+    if(_idleTimer.getSeconds() >= MAX_TIME_TO_MARK_AS_IDLE || _firstIt) {
+        _firstIt = false;
+        idle();
+    }
+    else {
+        idle();
+    }
+}
+
+void Player::finalization() {
+    spdlog::info("[{}] Thread ended.", fmt::format(fmt::fg(teamColor() == Common::Enums::Color::BLUE ? fmt::terminal_color::blue : fmt::terminal_color::yellow) | fmt::emphasis::bold, entityName().toStdString() + " " + std::to_string(playerId())));
 }
