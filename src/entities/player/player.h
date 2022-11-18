@@ -32,7 +32,7 @@
 class Player : public Common::Types::Object, public Threaded::Entity
 {
 public:
-    Player(quint8 playerId, Controller* controller);
+    Player(const quint8& playerId, const Common::Enums::Color& teamColor, Controller* controller);
 
     /*!
      * \brief Player params getters
@@ -63,6 +63,7 @@ private:
 
     // Internal objects
     quint8 _playerId;
+    Common::Enums::Color _teamColor;
 
     // Modules
     Controller *_controller;

@@ -26,14 +26,19 @@
 
 #define MAX_TIME_TO_MARK_AS_IDLE 1.0 // 1 second
 
-Player::Player(quint8 playerId, Controller* controller) {
+Player::Player(const quint8& playerId, const Common::Enums::Color& teamColor, Controller* controller) {
     // Setup internal objects and modules
     _playerId = playerId;
+    _teamColor = teamColor;
     _controller = controller;
 
     // Setup idle control
     _firstIt = false;
     _idleTimer.start();
+}
+
+Common::Enums::Color Player::teamColor() {
+    return _teamColor;
 }
 
 quint8 Player::playerId() {
