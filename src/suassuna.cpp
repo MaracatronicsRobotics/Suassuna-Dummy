@@ -21,7 +21,68 @@
 
 #include "suassuna.h"
 
-Suassuna::Suassuna()
-{
+Suassuna::Suassuna() {
+    // Set GUI as nullptr by default
+    _gui = nullptr;
 
+    // Start entity manager
+    _entityManager = new Threaded::EntityManager();
+}
+
+Suassuna::~Suassuna() {
+    // If GUI is not null, hide and delete
+    if(_gui != nullptr) {
+        _gui->hide();
+        delete _gui;
+    }
+
+    // Delete all entities in EntityManager
+    delete _entityManager;
+}
+
+bool Suassuna::start(bool useGUI) {
+    // If useGUI is set, create and show the GUI
+    if(useGUI) {
+        _gui = new GUI();
+        _gui->show();
+    }
+
+    // Start worldmap
+    _worldMap = new WorldMap(Constants::visionServiceAddress(), Constants::visionServicePort());
+    _entityManager->addEntity(_worldMap);
+
+    // Start controller
+    _controller = new Controller(Constants::actuatorServiceAddress(), Constants::actuatorServicePort());
+    _entityManager->addEntity(_controller);
+
+    // Start teams
+    magic_enum::enum_for_each<Common::Enums::Color>([this] (auto color) {
+        if(color != Common::Enums::Color::UNDEFINED) {
+            _teams.insert(color, new Team(color));
+
+            for(int i = 0; i < Constants::maxNumPlayers(); i++) {
+                Player *player = new Player(i, color, ((color == Constants::teamColor()) ? _controller : nullptr));
+                _teams[color]->addPlayer(player);
+
+                if(color == Constants::teamColor()) {
+                    _entityManager->addEntity(player);
+                }
+            }
+        }
+    });
+
+    // Setup teams in WorldMap
+    _worldMap->setupTeams(_teams);
+
+    // Start all entities
+    _entityManager->startEntities();
+
+    return true;
+}
+
+bool Suassuna::stop() {
+    // Stop entities registered in EntityManager (this also waits for them to stop)
+    _entityManager->disableEntities();
+
+    return true;
 }

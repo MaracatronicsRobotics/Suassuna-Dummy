@@ -22,10 +22,59 @@
 #ifndef SUASSUNA_H
 #define SUASSUNA_H
 
+#include <Armorial/Threaded/EntityManager/EntityManager.h>
+
+#include <src/constants/constants.h>
+
+#include <src/gui/gui.h>
+#include <src/entities/worldmap/worldmap.h>
+#include <src/entities/controller/controller.h>
+
+/*!
+ * \brief The Suassuna class is responsible to manage the creation, deletion, start and stop of all
+ * the core of the Suassuna application, it is, the entities (such as referee and players) and some
+ * other modules.
+ */
 class Suassuna
 {
 public:
+    /*!
+     * \brief Suassuna constructor.
+     */
     Suassuna();
+
+    /*!
+     * \brief Suassuna destructor.
+     */
+    ~Suassuna();
+
+    /*!
+     * \brief Start Suassuna core (entities, players and some other modules).
+     * \param useGUI Starts the GUI interface if set as True.
+     * \return True if everything went ok and false otherwise.
+     */
+    [[nodiscard]] bool start(bool useGUI);
+
+    /*!
+     * \brief Stop Suassuna core (entities, players and some other modules).
+     * \return True if everything went ok and false otherwise.
+     */
+    [[nodiscard]] bool stop();
+
+private:
+    // Modules
+    GUI *_gui;
+    WorldMap *_worldMap;
+    Controller *_controller;
+
+    // Teams
+    QMap<Common::Enums::Color, Team*> _teams;
+
+    // Entity manager
+    Threaded::EntityManager *_entityManager;
+
+    // Players list
+    QList<Player*> _players;
 };
 
 #endif // SUASSUNA_H
