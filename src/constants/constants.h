@@ -86,6 +86,11 @@ public:
      */
     static Common::Enums::Side teamPlaySide();
 
+    /*!
+     * \return A quint16 object containing the max num of players.
+     */
+    static quint16 maxNumPlayers();
+
 private:
     static Utils::ParameterHandler _parameterHandler;
 };

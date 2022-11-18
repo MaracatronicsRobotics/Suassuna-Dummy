@@ -56,7 +56,14 @@ void Player::updatePlayer(Common::Types::Object playerData) {
 }
 
 void Player::idle() {
-    /// TODO: use controller to make player idle
+    Armorial::Velocity velocity; velocity.set_vx(0.0); velocity.set_vy(0.0);
+    Armorial::AngularSpeed angularSpeed; angularSpeed.set_vw(0.0);
+    Armorial::KickSpeed kickSpeed; kickSpeed.set_chipangle(0.0); kickSpeed.set_kickangle(0.0); kickSpeed.set_kickspeed(0.0);
+
+    _controller->setLinearSpeed(playerId(), velocity);
+    _controller->setAngularSpeed(playerId(), angularSpeed);
+    _controller->setKick(playerId(), kickSpeed);
+    _controller->setDribble(playerId(), false);
 }
 
 void Player::initialization() {

@@ -146,3 +146,15 @@ Common::Enums::Side Constants::teamPlaySide() {
 
     return playSide.value();
 }
+
+quint16 Constants::maxNumPlayers() {
+    bool converted;
+    quint16 maxPlayers = _parameterHandler["Team"].getAsMap()["maxNumPlayers"].toInt(&converted);
+
+    if(!converted) {
+        spdlog::error("[Constants] Failed to read a valid integer in '{}'.", __FUNCTION__);
+        exit(-1);
+    }
+
+    return maxPlayers;
+}
