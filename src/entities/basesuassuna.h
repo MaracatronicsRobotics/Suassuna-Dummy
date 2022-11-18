@@ -19,37 +19,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef GUI_H
-#define GUI_H
+#ifndef BASESUASSUNA_H
+#define BASESUASSUNA_H
 
-#include <QMainWindow>
+#include <QObject>
+#include <QMap>
+#include <QReadWriteLock>
 
-#include <src/gui/fieldview/fieldview.h>
+#include <Armorial/Base/Client/Client.h>
+#include <Armorial/Common/Types/Object/Object.h>
+#include <Armorial/Common/Enums/Color/Color.h>
+#include <Armorial/Threaded/Entity/Entity.h>
+#include <Armorial/Utils/Timer/Timer.h>
+#include <Armorial/Libs/nameof/include/nameof.hpp>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class GUI; }
-QT_END_NAMESPACE
+#include <include/proto/messages.pb.h>
 
-class GUI : public QMainWindow
-{
-    Q_OBJECT
+class WorldMap;
+class Controller;
+class Player;
+class Team;
 
-public:
-    GUI(QWidget *parent = nullptr);
-    ~GUI();
+class Coach;
+class Playbook;
+class Role;
+class Behavior;
+class Skill;
 
-protected:
-    FieldView *_fieldView;
-    QTimer *_timer;
-
-private:
-    Ui::GUI *ui;
-    void setupDarkTheme();
-    void setupFieldView();
-
-public slots:
-    void updateBalls(const QList<Armorial::Ball>& balls);
-    void updateRobots(const QList<Armorial::Robot>& robots);
-    void updateFieldGeometry(const Common::Types::Field& fieldGeometry);
-};
-#endif // GUI_H
+#endif // BASESUASSUNA_H

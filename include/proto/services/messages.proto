@@ -61,6 +61,7 @@ message FieldLineSegment {
 	Position p1     = 1;
 	Position p2     = 2;
 	float thickness = 3;
+	float opacity = 4;
 }
 
 message FieldCircularArc {
@@ -68,6 +69,85 @@ message FieldCircularArc {
 	float a1        = 2;
 	float a2        = 3;
 	float thickness = 4;
+	float opacity = 5;
+}
+
+message FieldRectangle {
+	Position topLeft = 1;
+	Position bottomRight = 2;
+	float thickness = 3;
+	float opacity = 4;
+}
+
+message FieldTriangle {
+	Position p1 = 1;
+	Position p2 = 2;
+	Position p3 = 3;
+	float thickness = 4;
+	float opacity = 5;
+}
+
+message FieldArrow {
+	Position p1 = 1;
+	Position p2 = 2;
+	float thickness = 3;
+	float opacity = 4;
+}
+
+message FieldText {
+	enum FontName {
+		ARIAL = 0;
+		VERDANA = 1;
+		TIMES_NEW_ROMAN = 2;
+	}
+	
+	enum FontStyle {
+		BOLD = 1;
+		ITALIC = 2;
+		UNDERLINE = 4;
+		STRIKE = 8;
+	}
+	
+	enum FontColor {
+		BLACK = 0;
+		RED = 1;
+		BLUE = 2;
+		YELLOW = 3;
+		GREEN = 4;
+		MAGENTA = 5;
+		ORANGE = 6;
+		CYAN = 7;
+		WHITE = 8;
+	}
+	
+	FontName fontName = 1;
+	uint32 fontStyle = 2; 
+	float fontSize = 3;
+	FontColor fontColor = 4;
+	string content = 5;
+	float opacity = 6;
+}
+
+message FieldBall {
+	Ball ballObject = 1;
+	float opacity = 2;
+}
+
+message FieldRobot {
+	Robot robotObject = 1;
+	float opacity = 2;
+}
+
+message FieldFrame {
+	Field field = 1;
+	repeated FieldLineSegment = 2;
+	repeated FieldCircularArc = 3;
+	repeated FieldRectangle = 4;
+	repeated FieldTriangle = 5;
+	repeated FieldArrow = 6;
+	repeated FieldText texts = 7;
+	repeated FieldBall balls = 8;
+	repeated FieldRobot robots = 9;
 }
 
 message RobotIdentifier {

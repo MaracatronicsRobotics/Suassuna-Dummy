@@ -24,17 +24,24 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/bundled/color.h>
 
+#include <src/entities/controller/controller.h>
+#include <src/entities/player/roles/role.h>
+
 #define MAX_TIME_TO_MARK_AS_IDLE 1.0 // 1 second
 
-Player::Player(const quint8& playerId, const Common::Enums::Color& teamColor, Controller* controller) {
+Player::Player(const quint8& playerId, const Common::Enums::Color& teamColor, Controller* controller, WorldMap* worldMap) {
     // Setup internal objects and modules
     _playerId = playerId;
     _teamColor = teamColor;
     _controller = controller;
+    _worldMap = worldMap;
 
     // Setup idle control
     _firstIt = false;
     _idleTimer.start();
+
+    // Setup initial role as nullptr
+    _playerRole = nullptr;
 }
 
 Common::Enums::Color Player::teamColor() {
@@ -43,6 +50,28 @@ Common::Enums::Color Player::teamColor() {
 
 quint8 Player::playerId() {
     return _playerId;
+}
+
+QString Player::roleName() {
+    _mutexRole.lock();
+    QString roleName = (_playerRole == nullptr) ? "No Role" : _playerRole->name();
+    _mutexRole.unlock();
+
+    return roleName;
+}
+
+QString Player::behaviorName() {
+    _mutexRole.lock();
+    QString behaviorName = (_playerRole == nullptr) ? "No Behavior" : _playerRole->actualBehaviorName();
+    _mutexRole.unlock();
+
+    return behaviorName;
+}
+
+void Player::setRole(Role *role) {
+    _mutexRole.lock();
+    _playerRole = role;
+    _mutexRole.unlock();
 }
 
 void Player::updatePlayer(Common::Types::Object playerData) {
@@ -66,6 +95,10 @@ void Player::idle() {
     _controller->setDribble(playerId(), false);
 }
 
+Controller* Player::controller() {
+    return _controller;
+}
+
 void Player::initialization() {
     spdlog::info("[{}] Thread started.", fmt::format(fmt::fg(teamColor() == Common::Enums::Color::BLUE ? fmt::terminal_color::blue : fmt::terminal_color::yellow) | fmt::emphasis::bold, entityName().toStdString() + " " + std::to_string(playerId())));
 }
@@ -77,7 +110,18 @@ void Player::loop() {
         idle();
     }
     else {
-        idle();
+        _mutexRole.lock();
+        if(_playerRole != nullptr) {
+            if(!_playerRole->isInitialized()) {
+                _playerRole->initialize(_worldMap);
+            }
+            _playerRole->setPlayer(this);
+            _playerRole->runRole();
+        }
+        else {
+            idle();
+        }
+        _mutexRole.unlock();
     }
 }
 

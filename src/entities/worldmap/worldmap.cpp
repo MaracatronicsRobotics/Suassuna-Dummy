@@ -24,6 +24,7 @@
 #include <spdlog/spdlog.h>
 
 #include <src/constants/constants.h>
+#include <src/entities/coach/team/team.h>
 
 WorldMap::WorldMap(QString serviceAddress, quint16 servicePort) : Base::GRPC::Client<Armorial::Vision::VisionService>(serviceAddress, servicePort) {
     //

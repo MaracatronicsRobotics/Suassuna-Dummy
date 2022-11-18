@@ -21,6 +21,9 @@
 
 #include "suassuna.h"
 
+#include <src/entities/coach/team/team.h>
+#include <src/entities/player/player.h>
+
 Suassuna::Suassuna() {
     // Set GUI as nullptr by default
     _gui = nullptr;
@@ -61,7 +64,7 @@ bool Suassuna::start(bool useGUI) {
             _teams.insert(color, new Team(color));
 
             for(int i = 0; i < Constants::maxNumPlayers(); i++) {
-                Player *player = new Player(i, color, ((color == Constants::teamColor()) ? _controller : nullptr));
+                Player *player = new Player(i, color, ((color == Constants::teamColor()) ? _controller : nullptr), _worldMap);
                 _teams[color]->addPlayer(player);
 
                 if(color == Constants::teamColor()) {

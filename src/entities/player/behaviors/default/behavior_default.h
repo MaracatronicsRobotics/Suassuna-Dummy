@@ -19,37 +19,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef GUI_H
-#define GUI_H
+#ifndef BEHAVIOR_DEFAULT_H
+#define BEHAVIOR_DEFAULT_H
 
-#include <QMainWindow>
+#include <src/entities/player/behaviors/behavior.h>
+#include <src/entities/player/skills/skills.h>
 
-#include <src/gui/fieldview/fieldview.h>
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class GUI; }
-QT_END_NAMESPACE
-
-class GUI : public QMainWindow
+class Behavior_Default : public Behavior
 {
-    Q_OBJECT
-
 public:
-    GUI(QWidget *parent = nullptr);
-    ~GUI();
-
-protected:
-    FieldView *_fieldView;
-    QTimer *_timer;
+    Behavior_Default();
 
 private:
-    Ui::GUI *ui;
-    void setupDarkTheme();
-    void setupFieldView();
+    // Behavior inherited methods
+    void configure();
+    void run();
 
-public slots:
-    void updateBalls(const QList<Armorial::Ball>& balls);
-    void updateRobots(const QList<Armorial::Robot>& robots);
-    void updateFieldGeometry(const Common::Types::Field& fieldGeometry);
+    // Skills enum
+    enum {
+        SKILL_IDLE
+    };
+
+    // Skills pointers
+    Skill_Idle *_skill_idle;
 };
-#endif // GUI_H
+
+#endif // BEHAVIOR_DEFAULT_H

@@ -19,37 +19,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef GUI_H
-#define GUI_H
+#include "skill_idle.h"
 
-#include <QMainWindow>
+#include <src/entities/player/player.h>
 
-#include <src/gui/fieldview/fieldview.h>
+Skill_Idle::Skill_Idle() {
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class GUI; }
-QT_END_NAMESPACE
+}
 
-class GUI : public QMainWindow
-{
-    Q_OBJECT
+void Skill_Idle::configure() {
 
-public:
-    GUI(QWidget *parent = nullptr);
-    ~GUI();
+}
 
-protected:
-    FieldView *_fieldView;
-    QTimer *_timer;
+void Skill_Idle::run() {
+    Armorial::Velocity velocity; velocity.set_vx(0.0); velocity.set_vy(0.0);
+    Armorial::AngularSpeed angularSpeed; angularSpeed.set_vw(0.0);
+    Armorial::KickSpeed kickSpeed; kickSpeed.set_chipangle(0.0); kickSpeed.set_kickangle(0.0); kickSpeed.set_kickspeed(0.0);
 
-private:
-    Ui::GUI *ui;
-    void setupDarkTheme();
-    void setupFieldView();
-
-public slots:
-    void updateBalls(const QList<Armorial::Ball>& balls);
-    void updateRobots(const QList<Armorial::Robot>& robots);
-    void updateFieldGeometry(const Common::Types::Field& fieldGeometry);
-};
-#endif // GUI_H
+    setLinearSpeed(velocity);
+    setAngularSpeed(angularSpeed);
+    setKick(kickSpeed);
+    setDribble(false);
+}

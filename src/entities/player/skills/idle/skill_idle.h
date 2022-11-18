@@ -19,37 +19,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef GUI_H
-#define GUI_H
+#ifndef SKILL_IDLE_H
+#define SKILL_IDLE_H
 
-#include <QMainWindow>
+#include <src/entities/player/skills/skill.h>
 
-#include <src/gui/fieldview/fieldview.h>
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class GUI; }
-QT_END_NAMESPACE
-
-class GUI : public QMainWindow
+class Skill_Idle : public Skill
 {
-    Q_OBJECT
-
 public:
-    GUI(QWidget *parent = nullptr);
-    ~GUI();
-
-protected:
-    FieldView *_fieldView;
-    QTimer *_timer;
+    Skill_Idle();
 
 private:
-    Ui::GUI *ui;
-    void setupDarkTheme();
-    void setupFieldView();
-
-public slots:
-    void updateBalls(const QList<Armorial::Ball>& balls);
-    void updateRobots(const QList<Armorial::Robot>& robots);
-    void updateFieldGeometry(const Common::Types::Field& fieldGeometry);
+    // Skill inherited methods
+    void configure();
+    void run();
 };
-#endif // GUI_H
+
+#endif // SKILL_IDLE_H

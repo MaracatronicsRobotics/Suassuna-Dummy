@@ -19,37 +19,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef GUI_H
-#define GUI_H
+#include "role_default.h"
 
-#include <QMainWindow>
+Role_Default::Role_Default() {
 
-#include <src/gui/fieldview/fieldview.h>
+}
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class GUI; }
-QT_END_NAMESPACE
+void Role_Default::configure() {
+    // Starting behaviors
+    _behavior_default = new Behavior_Default();
 
-class GUI : public QMainWindow
-{
-    Q_OBJECT
+    // Adding behaviors to behaviors list
+    addBehavior(BEHAVIOR_DEFAULT, _behavior_default);
+}
 
-public:
-    GUI(QWidget *parent = nullptr);
-    ~GUI();
-
-protected:
-    FieldView *_fieldView;
-    QTimer *_timer;
-
-private:
-    Ui::GUI *ui;
-    void setupDarkTheme();
-    void setupFieldView();
-
-public slots:
-    void updateBalls(const QList<Armorial::Ball>& balls);
-    void updateRobots(const QList<Armorial::Robot>& robots);
-    void updateFieldGeometry(const Common::Types::Field& fieldGeometry);
-};
-#endif // GUI_H
+void Role_Default::run() {
+    setBehavior(BEHAVIOR_DEFAULT);
+}

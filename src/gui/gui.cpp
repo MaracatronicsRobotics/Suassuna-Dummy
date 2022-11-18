@@ -22,13 +22,65 @@
 #include "gui.h"
 #include "ui_gui.h"
 
-GUI::GUI(QWidget *parent) : QMainWindow(parent), ui(new Ui::GUI)
-{
+GUI::GUI(QWidget *parent) : QMainWindow(parent), ui(new Ui::GUI) {
     ui->setupUi(this);
+    setupDarkTheme();
+    setupFieldView();
 }
 
-GUI::~GUI()
-{
+GUI::~GUI() {
     delete ui;
 }
 
+void GUI::setupDarkTheme() {
+    QPalette darkPalette;
+    darkPalette.setColor(QPalette::Window,QColor(53,53,53));
+    darkPalette.setColor(QPalette::WindowText,Qt::white);
+    darkPalette.setColor(QPalette::Disabled,QPalette::WindowText,QColor(127,127,127));
+    darkPalette.setColor(QPalette::Base,QColor(42,42,42));
+    darkPalette.setColor(QPalette::AlternateBase,QColor(66,66,66));
+    darkPalette.setColor(QPalette::ToolTipBase,Qt::white);
+    darkPalette.setColor(QPalette::ToolTipText,Qt::white);
+    darkPalette.setColor(QPalette::Text,Qt::white);
+    darkPalette.setColor(QPalette::Disabled,QPalette::Text,QColor(127,127,127));
+    darkPalette.setColor(QPalette::Dark,QColor(35,35,35));
+    darkPalette.setColor(QPalette::Shadow,QColor(20,20,20));
+    darkPalette.setColor(QPalette::Button,QColor(53,53,53));
+    darkPalette.setColor(QPalette::ButtonText,Qt::white);
+    darkPalette.setColor(QPalette::Disabled,QPalette::ButtonText,QColor(127,127,127));
+    darkPalette.setColor(QPalette::BrightText,Qt::red);
+    darkPalette.setColor(QPalette::Link,QColor(42,130,218));
+    darkPalette.setColor(QPalette::Highlight,QColor(42,130,218));
+    darkPalette.setColor(QPalette::Disabled,QPalette::Highlight,QColor(80,80,80));
+    darkPalette.setColor(QPalette::HighlightedText,Qt::white);
+    darkPalette.setColor(QPalette::Disabled,QPalette::HighlightedText,QColor(127,127,127));
+
+    this->setPalette(darkPalette);
+}
+
+void GUI::setupFieldView() {
+    Common::Types::Field field_sslB(Common::Enums::Side::SIDE_LEFT, 500.0, 9000.0, 6000.0, 200.0, 1000.0, 1000.0, 2000.0, 6000.0);
+    ui->fieldLayout->addWidget(_fieldView = new FieldView(field_sslB, "", this));
+
+    // Setup timer
+    _timer = new QTimer(this);
+    _timer->setInterval(1000.0 / 60.0);
+    _timer->setSingleShot(false);
+    _timer->callOnTimeout([this](){
+        _fieldView->redraw();
+    });
+
+    _timer->start();
+}
+
+void GUI::updateBalls(const QList<Armorial::Ball>& balls) {
+    _fieldView->updateBalls(balls);
+}
+
+void GUI::updateRobots(const QList<Armorial::Robot>& robots) {
+    _fieldView->updateRobots(robots);
+}
+
+void GUI::updateFieldGeometry(const Common::Types::Field& fieldGeometry) {
+    _fieldView->updateFieldGeometry(fieldGeometry);
+}

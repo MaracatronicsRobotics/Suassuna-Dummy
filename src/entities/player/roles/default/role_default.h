@@ -19,37 +19,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#ifndef GUI_H
-#define GUI_H
+#ifndef ROLE_DEFAULT_H
+#define ROLE_DEFAULT_H
 
-#include <QMainWindow>
+#include <src/entities/player/roles/role.h>
+#include <src/entities/player/behaviors/behaviors.h>
 
-#include <src/gui/fieldview/fieldview.h>
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class GUI; }
-QT_END_NAMESPACE
-
-class GUI : public QMainWindow
+class Role_Default : public Role
 {
-    Q_OBJECT
-
 public:
-    GUI(QWidget *parent = nullptr);
-    ~GUI();
-
-protected:
-    FieldView *_fieldView;
-    QTimer *_timer;
+    Role_Default();
 
 private:
-    Ui::GUI *ui;
-    void setupDarkTheme();
-    void setupFieldView();
+    // Role inherited methods
+    void configure();
+    void run();
 
-public slots:
-    void updateBalls(const QList<Armorial::Ball>& balls);
-    void updateRobots(const QList<Armorial::Robot>& robots);
-    void updateFieldGeometry(const Common::Types::Field& fieldGeometry);
+    // Behaviors enum
+    enum {
+        BEHAVIOR_DEFAULT
+    };
+
+    // Behaviors pointers
+    Behavior_Default *_behavior_default;
 };
-#endif // GUI_H
+
+#endif // ROLE_DEFAULT_H

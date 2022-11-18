@@ -22,12 +22,9 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include <Armorial/Base/Client/Client.h>
-#include <Armorial/Common/Enums/Color/Color.h>
-#include <Armorial/Geometry/Vector2D/Vector2D.h>
-#include <Armorial/Threaded/Entity/Entity.h>
-
 #include <include/proto/actuatorservice.grpc.pb.h>
+
+#include <src/entities/basesuassuna.h>
 
 /*!
  * \brief The Controller class
@@ -42,6 +39,7 @@ public:
 
 protected:
     friend class Player;
+    friend class Skill;
 
     /*!
      * \brief setWheelsSpeed

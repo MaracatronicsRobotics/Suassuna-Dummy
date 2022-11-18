@@ -24,6 +24,8 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/bundled/color.h>
 
+#include <src/entities/player/player.h>
+
 Team::Team(const Common::Enums::Color& teamColor) {
     _teamColor = teamColor;
 }

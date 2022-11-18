@@ -22,16 +22,9 @@
 #ifndef WORLDMAP_H
 #define WORLDMAP_H
 
-#include <QReadWriteLock>
-
-#include <Armorial/Base/Client/Client.h>
-#include <Armorial/Common/Enums/Color/Color.h>
-#include <Armorial/Common/Types/Field/Field.h>
-#include <Armorial/Threaded/Entity/Entity.h>
-
 #include <include/proto/visionservice.grpc.pb.h>
 
-#include <src/entities/coach/team/team.h>
+#include <src/entities/basesuassuna.h>
 
 class WorldMap : public Threaded::Entity, public Base::GRPC::Client<Armorial::Vision::VisionService>
 {

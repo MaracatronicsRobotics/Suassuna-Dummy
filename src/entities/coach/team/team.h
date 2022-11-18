@@ -22,14 +22,7 @@
 #ifndef TEAM_H
 #define TEAM_H
 
-/// TODO: check this dependency
-#include <QList>
-
-#include <Armorial/Common/Enums/Color/Color.h>
-
-#include <include/proto/messages.pb.h>
-
-#include <src/entities/player/player.h>
+#include <src/entities/basesuassuna.h>
 
 class Team
 {

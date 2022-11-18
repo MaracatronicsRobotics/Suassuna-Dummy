@@ -69,8 +69,15 @@ SOURCES += \
     src/constants/constants.cpp \
     src/entities/coach/team/team.cpp \
     src/entities/controller/controller.cpp \
+    src/entities/player/behaviors/behavior.cpp \
+    src/entities/player/behaviors/default/behavior_default.cpp \
     src/entities/player/player.cpp \
+    src/entities/player/roles/default/role_default.cpp \
+    src/entities/player/roles/role.cpp \
+    src/entities/player/skills/idle/skill_idle.cpp \
+    src/entities/player/skills/skill.cpp \
     src/entities/worldmap/worldmap.cpp \
+    src/gui/fieldview/fieldview.cpp \
     src/gui/gui.cpp \
     src/suassuna.cpp
 
@@ -106,10 +113,21 @@ HEADERS += \
     include/proto/vssref_common.pb.h \
     include/proto/vssref_placement.pb.h \
     src/constants/constants.h \
+    src/entities/basesuassuna.h \
     src/entities/coach/team/team.h \
     src/entities/controller/controller.h \
+    src/entities/player/behaviors/behavior.h \
+    src/entities/player/behaviors/behaviors.h \
+    src/entities/player/behaviors/default/behavior_default.h \
     src/entities/player/player.h \
+    src/entities/player/roles/default/role_default.h \
+    src/entities/player/roles/role.h \
+    src/entities/player/roles/roles.h \
+    src/entities/player/skills/idle/skill_idle.h \
+    src/entities/player/skills/skill.h \
+    src/entities/player/skills/skills.h \
     src/entities/worldmap/worldmap.h \
+    src/gui/fieldview/fieldview.h \
     src/gui/gui.h \
     src/suassuna.h
 

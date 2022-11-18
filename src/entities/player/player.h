@@ -22,17 +22,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <Armorial/Common/Types/Object/Object.h>
-#include <Armorial/Common/Enums/Color/Color.h>
-#include <Armorial/Threaded/Entity/Entity.h>
-#include <Armorial/Utils/Timer/Timer.h>
-
-#include <src/entities/controller/controller.h>
+#include <src/entities/basesuassuna.h>
 
 class Player : public Common::Types::Object, public Threaded::Entity
 {
 public:
-    Player(const quint8& playerId, const Common::Enums::Color& teamColor, Controller* controller);
+    Player(const quint8& playerId, const Common::Enums::Color& teamColor, Controller* controller, WorldMap *worldMap);
 
     /*!
      * \brief Player params getters
@@ -40,13 +35,16 @@ public:
     Common::Enums::Color teamColor();
     quint8 playerId();
 
-    /*!
-     * \brief Mark player as idle, setting its speeds to zero.
-     */
-    void idle();
+    // Role management
+    QString roleName();
+    QString behaviorName();
 
 protected:
+    // Friend classes for update and internal control of the player
     friend class Team;
+    friend class Skill;
+    friend class Behavior;
+    friend class Role;
 
     /*!
      * \brief Update this Player class with a given Common::Types::Object containing
@@ -54,6 +52,22 @@ protected:
      * \param playerData The given data to update this Player instance.
      */
     void updatePlayer(Common::Types::Object playerData);
+
+    /*!
+     * \brief Mark player as idle, setting its speeds to zero.
+     */
+    void idle();
+
+    /*!
+     * \return The Controller pointer of this player instance.
+     */
+    Controller* controller();
+
+    /*!
+     * \brief setRole
+     * \param role
+     */
+    void setRole(Role* role);
 
 private:
     // Entity inherited methods
@@ -65,8 +79,13 @@ private:
     quint8 _playerId;
     Common::Enums::Color _teamColor;
 
+    // Role management
+    Role *_playerRole;
+    QMutex _mutexRole;
+
     // Modules
     Controller *_controller;
+    WorldMap *_worldMap;
 
     // Idle control
     Utils::Timer _idleTimer;
