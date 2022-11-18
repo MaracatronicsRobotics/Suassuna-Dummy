@@ -22,11 +22,71 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <Armorial/Base/Client/Client.h>
+#include <Armorial/Common/Enums/Color/Color.h>
+#include <Armorial/Geometry/Vector2D/Vector2D.h>
+#include <Armorial/Threaded/Entity/Entity.h>
 
-class Controller
+#include <include/proto/actuatorservice.grpc.pb.h>
+
+/*!
+ * \brief The Controller class
+ */
+class Controller : public Threaded::Entity, public Base::GRPC::Client<Armorial::Actuator::ActuatorService>
 {
 public:
-    Controller();
+    /*!
+     * \brief Controller
+     */
+    Controller(QString serviceAddress, quint16 servicePort);
+
+protected:
+    friend class Player;
+
+    /*!
+     * \brief setWheelsSpeed
+     * \param playerId
+     * \param wheelLeft
+     * \param wheelRight
+     */
+    void setLinearSpeed(const quint8& playerId, const Armorial::Velocity& linearSpeed);
+
+    /*!
+     * \brief Set angular speed for a given robot.
+     * \param playerId The given robot.
+     * \param angularSpeed The given liner speed.
+     */
+    void setAngularSpeed(const quint8& playerId, const Armorial::AngularSpeed& angularSpeed);
+
+    /*!
+     * \brief Set kick data for a given robot.
+     * \param playerId The given robot.
+     * \param kickSpeed, chipKickAngle, kickAngle The given kick data.
+     */
+    void setKick(const quint8& playerId, const Armorial::KickSpeed& kickSpeed);
+
+    /*!
+     * \brief Set dribbling for a given robot.
+     * \param playerId The given robot.
+     * \param dribbling The given dribbling status.
+     */
+    void setDribble(const quint8& playerId, const bool& dribbling);
+
+    /*!
+     * \brief Setup a default packet with the robot identifier at the index of the _controlPackets map.
+     * \param playerId The given robot.
+     */
+    void setupDefaultPacket(const quint8& playerId);
+
+private:
+    // Entity inherited methods
+    void initialization();
+    void loop();
+    void finalization();
+
+    // Intenrnal objects
+    QMap<quint8, Armorial::ControlPacket> _controlPackets;
+    QMutex _mutex;
 };
 
 #endif // CONTROLLER_H
